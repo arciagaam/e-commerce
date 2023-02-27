@@ -3,6 +3,7 @@ import reactLogo from './assets/react.svg';
 import { Route, Routes } from 'react-router-dom';
 //PAGES
 import Home from './pages/Home';
+import ShopLanding from './pages/ShopLanding';
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       </ul>
       <Routes>
         <Route index path='/' element={<Home />} />
+        <Route index path='/shop' element={<ShopLanding />} />
       </Routes>
     </div>
   )
