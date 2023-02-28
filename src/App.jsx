@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 //PAGES
 import Home from './pages/Home';
 import ShopLanding from './pages/ShopLanding';
+import ProductsList from './pages/ProductsList';
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
       <Routes>
         <Route index path='/' element={<Home />} />
         <Route index path='/shop' element={<ShopLanding />} />
+        <Route index path='/products' element={<ProductsList />} />
       </Routes>
     </div>
   )
