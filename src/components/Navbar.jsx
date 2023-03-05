@@ -1,3 +1,4 @@
+import { data } from 'autoprefixer';
 import React from 'react'
 import { NavLink, Outlet } from 'react-router-dom';
 
@@ -11,7 +12,7 @@ const Navbar = () => {
             Sinagtala
         </NavLink>
 
-        <div className="flex flex-row gap-5 text-base">
+        <div className="flex flex-row gap-20 text-base">
             <NavLink to='collections'>
                Collections
             </NavLink>
@@ -19,7 +20,7 @@ const Navbar = () => {
                Shop
             </NavLink>
             <NavLink to='about'>
-               About
+               About Us
             </NavLink>
             <NavLink to='profile'>
                Profile

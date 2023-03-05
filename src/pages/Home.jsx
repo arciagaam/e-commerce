@@ -65,12 +65,6 @@ const Home = () => {
                     </div>
                 </div>
             </div>
-
-
-            <div className="flex flex-col items-center justify-center min-h-[40vh]">
-                Footer
-            </div>
-
      
         </div>
 

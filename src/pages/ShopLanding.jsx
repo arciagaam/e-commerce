@@ -2,7 +2,7 @@ import React from 'react'
 
 const ShopLanding = () => {
     return (
-        <div className="relative flex w-full after:content-[''] after:absolute after:top-0 after:left-0 after:right-0 after:min-h-[50%] after:z-[-1] z-[-2] after:bg-white bg-[#EFE3D9]">
+        <div className="relative flex w-full flex-1 after:content-[''] after:absolute after:top-0 after:left-0 after:right-0 after:min-h-[50%] after:z-[-1] z-[-2] after:bg-white bg-[#EFE3D9]">
             <div className="bg-transparent flex flex-col justify-center items-center py-16 gap-y-12 ">
                 
                 <div className="flex flex-col w-3/5 items-center self-center gap-4">
