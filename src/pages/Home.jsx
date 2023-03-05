@@ -1,5 +1,6 @@
 import React from 'react'
 
+
 const Home = () => {
     return (
         <div className='flex flex-col w-full'>
@@ -70,7 +71,10 @@ const Home = () => {
                 Footer
             </div>
 
+     
         </div>
+
+
     )
 }
 
