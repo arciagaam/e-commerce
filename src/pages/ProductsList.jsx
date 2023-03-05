@@ -28,17 +28,19 @@ const ProductsList = () => {
         <div className="flex w-full">
             <div className="flex flex-col w-full items-center self-center gap-4">
                 <p className="text-5xl">All Bouquets</p>
-                
+
                 <div className="flex flex-row justify-between gap-7">
-                <Dropdown title={'Category'} content={[
-                    { label: 'Option 1', value: 'option1' },
-                    { label: 'Option 2', value: 'option2' }
-                  ]}  />
-            
-                  <Dropdown title={'Filter'} content={[
-                    { label: 'Option A', value: 'optionA' },
-                    { label: 'Option B', value: 'optionB' }
-                  ]}  />
+                    <div className='p-2 bg-[#f4f4f4] shadow font-medium'></div>
+                    <Dropdown title={'Category'} content={[
+                        { label: 'Option 1', value: 'option1' },
+                        { label: 'Option 2', value: 'option2' }
+                    ]} />
+
+                    <div className='p-2 bg-[#f4f4f4] shadow font-medium'></div>
+                    <Dropdown title={'Filter'} content={[
+                        { label: 'Option A', value: 'optionA' },
+                        { label: 'Option B', value: 'optionB' }
+                    ]} />
                 </div>
             </div>
         </div>
