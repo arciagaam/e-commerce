@@ -25,6 +25,9 @@ const Navbar = () => {
             <NavLink to='profile'>
                Profile
             </NavLink>
+            <NavLink to='login'>
+               Login
+            </NavLink>
         </div>
 
     </div>

@@ -8,6 +8,7 @@ import ProductsList from './pages/ProductsList';
 import Navbar from './components/Navbar';
 import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
+import Login from './pages/auth/Login';
 
 const App = () => {
   return (
@@ -20,6 +21,7 @@ const App = () => {
           <Route path='shop' element={<ShopLanding />} />
           <Route path='products' element={<ProductsList />} />
           <Route path='about' element={<AboutUs />} />
+          <Route path='login' element={<Login />} />
         </Route>
 
         
