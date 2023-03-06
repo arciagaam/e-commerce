@@ -7,6 +7,20 @@ module.exports = {
     extend: {
       backgroundImage: {
         'hero': "url('../public/images/hero.png')",
+      },
+      colors : {
+        primary: '#EFE3D9'
+      },
+      animation : {
+        'toast' : 'toast 3s ease-in-out'
+      },
+      keyframes : {
+        toast : {
+          '0%' : {transform: 'translateY(0)'},
+          '25%' : {transform: 'translateY(calc(100% + 120px))'},
+          '75%' : {transform: 'translateY(calc(100% + 120px))'},
+          '100%' : {transform: 'translateY(0)'},
+        }
       }
     },
     fontFamily: {
