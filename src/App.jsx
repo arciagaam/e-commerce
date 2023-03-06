@@ -9,11 +9,13 @@ import Navbar from './components/Navbar';
 import AboutUs from './pages/AboutUs';
 import Footer from './components/Footer';
 import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
+import Profile from './pages/Profile';
+
 
 const App = () => {
   return (
-    <div className='flex flex-col font-display min-h-screen'>
-
+    <div className='relative flex flex-col font-display min-h-screen'>
       <Routes>
 
         <Route path='/' element={<Navbar/>}>
@@ -22,6 +24,8 @@ const App = () => {
           <Route path='products' element={<ProductsList />} />
           <Route path='about' element={<AboutUs />} />
           <Route path='login' element={<Login />} />
+          <Route path='register' element={<Register />} />
+          <Route path='profile' element={<Profile />} />
         </Route>
 
         
