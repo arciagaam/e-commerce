@@ -4,8 +4,8 @@ const Toast = ({message}) => {
 
   useEffect(()=>{
     setTimeout(()=>{
-      sessionStorage.removeItem('message');
-    }, 6000);
+      localStorage.removeItem('message');
+    }, 100);
   },[])
 
   return (

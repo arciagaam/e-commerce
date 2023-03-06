@@ -18,7 +18,12 @@ const Login = () => {
 
     useEffect(()=>{
         if(localStorage.getItem('user')){
-            navigate('/')
+            const {role} = JSON.parse(localStorage.getItem('user'));
+            if(role == 0){
+                navigate('/');
+            }else {
+                navigate('/admin');
+            }
         }
     },[])
 
@@ -44,15 +49,13 @@ const Login = () => {
             const {email, uid} = userCredentials.user;
             const docRef = doc(db, 'users', uid);
             const docSnap = await getDoc(docRef);
-            console.log(docSnap.data());
             if(docSnap.exists()) {
                 const {role} = docSnap.data();
                 localStorage.setItem('user', JSON.stringify({email, uid, role}));
+                location.reload();
             }else {
                 console.error('No data exists.');
             }
-
-            location.reload();
         })
         .catch((err) => {
             if(err.message.includes('wrong-password') || err.message.includes('invalid-email')){
@@ -68,7 +71,7 @@ const Login = () => {
 
     return (
         <>
-            {sessionStorage.getItem('message') && <Toast message={sessionStorage.getItem('message')}/>}
+            {localStorage.getItem('message') && <Toast message={localStorage.getItem('message')}/>}
             
             <div className="flex flex-col justify-center items-center flex-1">
 
@@ -95,7 +98,7 @@ const Login = () => {
 
                         <button type='submit' className='bg-primary p-2 mt-4'>Submit</button>
 
-                        <p onClick={()=>{navigate("/register")}} className='text-sm text-center underline cursor-pointer'>Don't have an account? Register here.</p>
+                        <p onClick={()=>{location.href='/register'}} className='text-sm text-center underline cursor-pointer'>Don't have an account? Register here.</p>
                     </form>
                 </div>
 

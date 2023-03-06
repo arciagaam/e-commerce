@@ -4,7 +4,7 @@ import Toast from '../components/Toast'
 const Home = () => {
     return (
         <>
-            {sessionStorage.getItem('message') && <Toast message={sessionStorage.getItem('message')} />}
+            {localStorage.getItem('message') && <Toast message={localStorage.getItem('message')} />}
 
             <div className='flex flex-col w-full'>
 

@@ -44,7 +44,7 @@ const Register = () => {
                     email:email,
                     role:0,
                 })                
-                sessionStorage.setItem('message', 'Account Created');
+                localStorage.setItem('message', 'Account Created');
                 navigate('/login');
             }catch (err) {
                 console.log('Something went wrong: ', err);
