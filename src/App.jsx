@@ -11,14 +11,15 @@ import Footer from './components/Footer';
 import Login from './pages/auth/Login';
 import Product from './pages/Product';
 import Register from './pages/auth/Register';
-import Profile from './pages/Profile';
+import Profile from './pages/user/Profile';
 
 import AdminNavbar from './components/AdminNavbar';
 import Dashboard from './pages/admin/Dashboard';
 import Inventory from './pages/admin/Inventory';
-import Products from './pages/admin/Products';
+import Products from './pages/admin/products/Products';
 import Orders from './pages/admin/Orders';
 import Collections from './pages/admin/Collections';
+import AddProduct from './pages/admin/products/AddProduct';
 
 const App = () => {
   
@@ -39,6 +40,7 @@ const App = () => {
             <Route index element={<Dashboard />}></Route>
             <Route path='orders' element={<Orders />}></Route>
             <Route path='products' element={<Products />}></Route>
+            <Route path='products/add' element={<AddProduct />}></Route>
             <Route path='collections' element={<Collections />}></Route>
             <Route path='inventory' element={<Inventory />}></Route>
           </Route>

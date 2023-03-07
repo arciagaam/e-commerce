@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {auth, db} from './../../firebase';
+import {auth, db} from '../../../firebase';
 import {
   collection,
   getDocs,
@@ -10,9 +10,10 @@ import {
   doc,
   deleteDoc,
 } from "firebase/firestore";
+import { useNavigate } from 'react-router-dom';
 
 const Products = () => {
-
+  const navigate = useNavigate();
   const [products, setProducts] = useState([])
 
   useEffect(() => {
@@ -43,7 +44,7 @@ const Products = () => {
         <div className="flex flex-row gap-5">
           {/* <button>Export</button>
           <button>Import</button> */}
-          <button>Add Product</button>
+          <button onClick={()=>{navigate('add')}}>Add Product</button>
         </div>
       </div>
 
@@ -58,8 +59,8 @@ const Products = () => {
         </thead>
 
         <tbody>
-            {products.map(product => {
-              return <TableRow product={product}/>
+            {products.map((product, index) => {
+              return <TableRow key={index} product={product}/>
             })}
         </tbody>
       </table>
