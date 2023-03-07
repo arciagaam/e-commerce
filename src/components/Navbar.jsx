@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-
+import Footer from './Footer';
 const Navbar = () => {
 
   const [user, setUser] = useState(null)
@@ -26,7 +26,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-between items-center px-5 py-5 bg-primary">
+      <div className="flex flex-row justify-between items-center px-5 py-5 bg-primary font-display">
         <NavLink to='/' className='text-2xl'>
           Sinagtala
         </NavLink>
