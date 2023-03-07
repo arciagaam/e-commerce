@@ -37,32 +37,32 @@ const ProductsList = () => {
             <div className="relative grid grid-rows-2 grid-cols-5 w-full">
                 <ProductCard
                     image={'cat2.png'}
-                    productName={'asdsadsa'}
+                    productName={'1'}
                     handleClickEvent={handleClickEvent}
                 />
                 <ProductCard
                     image={'cat2.png'}
-                    productName={'asdsadsa'}
+                    productName={'2'}
                     handleClickEvent={handleClickEvent}
                 />
                 <ProductCard
                     image={'cat2.png'}
-                    productName={'asdsadsa'}
+                    productName={'3'}
                     handleClickEvent={handleClickEvent}
                 />
                 <ProductCard
                     image={'cat2.png'}
-                    productName={'asdsadsa'}
+                    productName={'4'}
                     handleClickEvent={handleClickEvent}
                 />
                 <ProductCard
                     image={'cat2.png'}
-                    productName={'asdsadsa'}
+                    productName={'5'}
                     handleClickEvent={handleClickEvent}
                 />
                 <ProductCard
                     image={'cat2.png'}
-                    productName={'asdsadsa'}
+                    productName={'6'}
                     handleClickEvent={handleClickEvent}
                 />
             </div>
