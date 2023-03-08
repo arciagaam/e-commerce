@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import Dropdown from '../../components/Dropdown';
 import ProductCard from '../../components/ProductCard';
-import ProductQuickView from '../../components/ProductQuickView';
+// import ProductQuickView from '../../components/ProductQuickView';
 
 const ProductsList = () => {
 
@@ -10,7 +10,12 @@ const ProductsList = () => {
 
     const handleClickEvent = () => {
         setIsActive(!isActive)
+        console.log()
     }
+    // const getProductDetails = (name) => {
+    //     // let details = {image, name}
+    //     return name
+    // }
 
 
     return (
@@ -38,35 +43,41 @@ const ProductsList = () => {
                 <ProductCard
                     image={'cat2.png'}
                     productName={'1'}
-                    handleClickEvent={handleClickEvent}
+                    // handleClickEvent={handleClickEvent}
+                    // isActive={isActive}
                 />
                 <ProductCard
                     image={'cat2.png'}
                     productName={'2'}
-                    handleClickEvent={handleClickEvent}
+                    // handleClickEvent={handleClickEvent}
+                    // isActive={isActive}
                 />
                 <ProductCard
                     image={'cat2.png'}
                     productName={'3'}
-                    handleClickEvent={handleClickEvent}
+                    // handleClickEvent={handleClickEvent}
+                    // isActive={isActive}
                 />
                 <ProductCard
                     image={'cat2.png'}
                     productName={'4'}
-                    handleClickEvent={handleClickEvent}
+                    // handleClickEvent={handleClickEvent}
+                    // isActive={isActive}
                 />
                 <ProductCard
                     image={'cat2.png'}
                     productName={'5'}
-                    handleClickEvent={handleClickEvent}
+                    // handleClickEvent={handleClickEvent}
+                    // isActive={isActive}
                 />
                 <ProductCard
                     image={'cat2.png'}
                     productName={'6'}
-                    handleClickEvent={handleClickEvent}
+                    // handleClickEvent={handleClickEvent}
+                    // isActive={isActive}
                 />
             </div>
-            {isActive && <ProductQuickView/>}
+            {/* {isActive && <ProductQuickView/>} */}
         </div>
     )
 }
