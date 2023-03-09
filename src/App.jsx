@@ -9,7 +9,7 @@ import Navbar from './components/Navbar';
 import AboutUs from './pages/user/AboutUs';
 import Footer from './components/Footer';
 import Login from './pages/auth/Login';
-import Product from './pages/Product';
+import Product from './pages/user/Product';
 
 const App = () => {
   return (
