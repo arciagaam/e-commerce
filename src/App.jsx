@@ -18,8 +18,10 @@ import Dashboard from './pages/admin/Dashboard';
 import Inventory from './pages/admin/Inventory';
 import Products from './pages/admin/products/Products';
 import Orders from './pages/admin/Orders';
-import Collections from './pages/admin/Collections';
+import Collections from './pages/admin/collections/Collections';
 import AddProduct from './pages/admin/products/AddProduct';
+import AddCollection from './pages/admin/collections/AddCollection';
+import ShowCollection from './pages/admin/collections/ShowCollection';
 
 const App = () => {
   
@@ -42,6 +44,8 @@ const App = () => {
             <Route path='products' element={<Products />}></Route>
             <Route path='products/add' element={<AddProduct />}></Route>
             <Route path='collections' element={<Collections />}></Route>
+            <Route path='collections/add' element={<AddCollection />}></Route>
+            <Route path='collections/:id' element={<ShowCollection />}></Route>
             <Route path='inventory' element={<Inventory />}></Route>
           </Route>
 

@@ -15,10 +15,10 @@ import {
 } from "firebase/firestore";
 
 const Login = () => {
-
     useEffect(()=>{
         if(localStorage.getItem('user')){
             const {role} = JSON.parse(localStorage.getItem('user'));
+            console.log(role);
             if(role == 0){
                 navigate('/');
             }else {

@@ -38,7 +38,7 @@ const Navbar = () => {
           {user ? <NavLink to='profile'> Profile </NavLink> : <NavLink to='login'> Login / Register </NavLink>}
         </div>
       </div>
-      <div className='font-display min-h-screen'>
+      <div className='font-display min-h-screen flex flex-col'>
         <Outlet />
         <Footer />
       </div>
