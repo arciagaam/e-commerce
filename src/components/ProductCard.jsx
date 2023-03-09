@@ -1,7 +1,8 @@
 import React from 'react'
 import { useState } from 'react'
+import ProductQuickView from './ProductQuickView'
 
-const ProductCard = ({ image, productName, handleClickEvent }) => {
+const ProductCard = ({ image, productName}) => {
 
     const [isHovering, setIsHovering] = useState(false)
     const [isActive, setIsActive] = useState(false);
@@ -22,7 +23,7 @@ const ProductCard = ({ image, productName, handleClickEvent }) => {
                 <div className="flex relative justify-center overflow-hidden h-96" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
                     {isHovering && (
                         <div className="flex items-center justify-center cursor-pointer z-[2] bg-neutral-800/50 text-gray-300 w-full"
-                            onClick={handleClickEvent}>
+                            onClick={() => setIsActive(!isActive)}>
                             <p className='text-lg'>Quick View</p>
                         </div>
                     )}
@@ -36,7 +37,12 @@ const ProductCard = ({ image, productName, handleClickEvent }) => {
                     <p>{productName}</p>
                 </div>
             </div>
-            
+                      
+            {isActive && <ProductQuickView
+                productName={productName}
+                isActive={isActive}
+                setIsActive={setIsActive}
+            />}
         </>
 
     )
