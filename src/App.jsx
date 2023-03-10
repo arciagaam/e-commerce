@@ -43,6 +43,7 @@ const App = () => {
             <Route index path='manageaccount' element={<ManageAccount/>}/>
             <Route path='myprofile' element={<MyProfile/>}/>
             <Route path='addressbook' element={<AddressBook/>}/>
+            <Route path='product' element={<Product/>}/>
           </Route>
         </Route>
 

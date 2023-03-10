@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import NumberCounter from '../../components/NumberCounter';
+import Rating from '../../components/Rating';
 
 const Product = () => {
 
@@ -10,10 +11,10 @@ const Product = () => {
     }
 
     return (
-    <div className="flex flex-col items-center justify-center h-full gap-16">
+    <div className="flex flex-col items-center justify-center h-full gap-16 px-20">
 
         {/* Product Details */}
-        <div className="flex justify-center w-auto gap-12 bg-slate-100 p-20">
+        <div className="flex justify-center gap-12 bg-slate-100 p-20 w-full">
             <div className="flex justify-center">
                 <img src='./images/cat1.png'></img>
             </div>
@@ -39,7 +40,7 @@ const Product = () => {
                             <NumberCounter label={'Hershey'}/>
                             <NumberCounter label={'Kitkat'}/>
                         </div>
-                        <div className="flex flex-col gap-1 hidden">
+                        <div className="flex flex-col gap-1">
                             <NumberCounter label={'Crochet Tulip'}/>
                             <NumberCounter label={'Crochet Lavender'}/>
                             <NumberCounter label={'Crochet Sunflower'}/>
@@ -54,9 +55,10 @@ const Product = () => {
         </div>
 
         {/* Comment Section */}
-        <div className="flex flex-col w-[1000px]  bg-slate-100 p-20">
-            <div className="flex w-[75%]">Product Atings</div>
-            <input type="text" />
+        <div className="flex flex-col w-full  bg-slate-100 p-8 gap-2">
+            <div className="flex w-[75%]">Product Ratings</div>
+            <Rating/>
+            <Rating/>
             
         </div>
     </div>
