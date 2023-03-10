@@ -11,6 +11,9 @@ import Footer from './components/Footer';
 import Login from './pages/auth/Login';
 import Product from './pages/Product';
 import Profile from './pages/user/Profile';
+import ManageAccount from './components/profile/ManageAccount';
+import MyProfile from './components/profile/MyProfile';
+import AddressBook from './components/profile/AddressBook';
 
 const App = () => {
   return (
@@ -25,7 +28,11 @@ const App = () => {
           <Route path='about' element={<AboutUs />} />
           <Route path='login' element={<Login />} />
           <Route path='product' element={<Product/>} />
-          <Route path='profile' element={<Profile/>} />
+          <Route path='profile' element={<Profile/>}>
+            <Route index path='manageaccount' element={<ManageAccount/>}/>
+            <Route path='myprofile' element={<MyProfile/>}/>
+            <Route path='addressbook' element={<AddressBook/>}/>
+          </Route>
         </Route>
 
         
