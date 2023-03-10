@@ -11,7 +11,6 @@ import Footer from './components/Footer';
 import Login from './pages/auth/Login';
 import Product from './pages/user/Product';
 import Register from './pages/auth/Register';
-import Profile from './pages/user/Profile';
 
 import AdminNavbar from './components/AdminNavbar';
 import Dashboard from './pages/admin/Dashboard';
@@ -23,6 +22,10 @@ import AddProduct from './pages/admin/products/AddProduct';
 import AddCollection from './pages/admin/collections/AddCollection';
 import ShowCollection from './pages/admin/collections/ShowCollection';
 import ShowProduct from './pages/admin/products/ShowProduct';
+import Profile from './pages/user/Profile';
+import ManageAccount from './components/profile/ManageAccount';
+import MyProfile from './components/profile/MyProfile';
+import AddressBook from './components/profile/AddressBook';
 
 const App = () => {
   
@@ -36,8 +39,12 @@ const App = () => {
             <Route path='about' element={<AboutUs />} />
             <Route path='login' element={<Login />} />
             <Route path='register' element={<Register />} />
-            <Route path='profile' element={<Profile />} />
+            <Route path='profile' element={<Profile/>}>
+            <Route index path='manageaccount' element={<ManageAccount/>}/>
+            <Route path='myprofile' element={<MyProfile/>}/>
+            <Route path='addressbook' element={<AddressBook/>}/>
           </Route>
+        </Route>
 
           <Route path='/admin' element={<AdminNavbar />}>
             <Route index element={<Dashboard />}></Route>

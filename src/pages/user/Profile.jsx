@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { auth } from '../../firebase'
 import { signOut } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, NavLink, Outlet } from 'react-router-dom'
 
 
 const Profile = () => {
@@ -25,10 +25,24 @@ const Profile = () => {
     }
 
     return (
-        <div className='flex flex-col w-full'>
-
+        <div className="flex flex-row columns-2 h-auto px-52 w-full">
             <button onClick={handleSignOut}>Sign Out</button>
-
+            <div className="flex w-1/5 flex-col">
+                <NavLink to='manageaccount'>
+                    Manage My Account
+                </NavLink>
+                <NavLink to='myprofile'>
+                    My Profile
+                </NavLink>
+                <NavLink to='addressbook'>
+                    Address Book
+                </NavLink>
+            </div>
+            <div className="flex flex-col w-4/5 gap-5">
+                <p className='text-2xl'>Manage My Account</p>
+                
+                <Outlet/>
+            </div>
         </div>
     )
 }
