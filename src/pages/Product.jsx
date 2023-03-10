@@ -26,8 +26,6 @@ const Product = () => {
                 <p>Add-on:</p>
                 <div className="flex">
                     <NumberCounter label={'Ferrero'}/>
-
-                    
                 </div>
             </div>
             

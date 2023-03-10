@@ -16,9 +16,7 @@ const Home = () => {
                             <p className='text-lg'>Shop Now</p>
                         </div>
 
-                        <div className="absolute inset-0 bg-hero bg-no-repeat bg-cover bg-center bg-black z-[1]">
-
-                        </div>
+                        <div className="absolute inset-0 bg-hero bg-no-repeat bg-cover bg-center bg-accent-dark z-[1]"></div>
                     </div>
 
                     {/* Body */}
@@ -81,7 +79,7 @@ const Category = ({ image, title, subTitle, content, flipped = 0 }) => {
         <div className={`flex gap-10 ${flipped == 0 ? 'flex-row' : 'flex-row-reverse'}`}>
 
             <div className="flex flex-col items-center justify-center gap-2 flex-1">
-                <p className='text-lg'>{subTitle}</p>
+                <p className='text-lg text-accent-default'>{subTitle}</p>
                 <p className='text-2xl'>{title}</p>
                 <p className='text-sm text-center max-w-[calc(75%)]'>{content}</p>
             </div>

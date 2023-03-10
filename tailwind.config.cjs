@@ -9,7 +9,12 @@ module.exports = {
         'hero': "url('../public/images/hero.png')",
       },
       colors : {
-        primary: '#EFE3D9'
+        primary: '#EFE3D9',
+        accent: {
+          default: '#DF687D',
+          light : '#FAEBEE',
+          dark : '#3B0C15'
+        }
       },
       animation : {
         'toast' : 'toast 3s ease-in-out'

@@ -85,7 +85,7 @@ const Register = () => {
                             </div>
                         </div>
 
-                        <button type='submit' className='bg-primary p-2 mt-4'>Submit</button>
+                        <button type='submit' className='bg-accent-default text-white p-2 mt-4'>Submit</button>
 
                         <p onClick={()=>{navigate("/login")}} className='text-sm text-center underline cursor-pointer'>Already have an account? Login here.</p>
 

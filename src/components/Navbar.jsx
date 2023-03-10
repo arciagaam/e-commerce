@@ -26,7 +26,7 @@ const Navbar = () => {
 
   return (
     <>
-      <div className="flex flex-row justify-between items-center px-5 py-5 bg-primary font-display">
+      <div className="flex flex-row justify-between items-center px-5 py-5 font-display text-accent-dark">
         <NavLink to='/' className='text-2xl'>
           Sinagtala
         </NavLink>
@@ -38,7 +38,7 @@ const Navbar = () => {
           {user ? <NavLink to='profile'> Profile </NavLink> : <NavLink to='login'> Login / Register </NavLink>}
         </div>
       </div>
-      <div className='font-display min-h-screen flex flex-col'>
+      <div className='font-display min-h-screen flex flex-col text-accent-dark'>
         <Outlet />
         <Footer />
       </div>

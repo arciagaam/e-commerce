@@ -33,7 +33,7 @@ const ShowCollection = () => {
                 setTitle(docSnap.data().title);
                 setDescription(docSnap.data().description);
             }else {
-                console.log('No collection');
+                console.log('Collection not found.');
             }
         }
 

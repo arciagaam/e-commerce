@@ -1,38 +1,43 @@
 import React, { useState, useEffect } from 'react'
 import { auth, db, storage } from '../../../firebase';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     collection,
     getDocs,
     addDoc,
     setDoc,
     updateDoc,
+    getDoc,
     doc,
     deleteDoc,
+    where,
+    query
 } from "firebase/firestore";
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { useNavigate } from 'react-router-dom';
+import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
-const AddProduct = () => {
+const ShowProduct = () => {
     const navigate = useNavigate();
-
+    const params = useParams();
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [pricing, setPricing] = useState('');
     const [costPerItem, setCostPerItem] = useState('');
     const [quantity, setQuantity] = useState('');
+    const [dataProduct, setDataProduct] = useState('');
+    const [dropDownCollection, setDropDownCollection] = useState('');
 
-    const [dropDownCollection, setDropDownCollection] = useState('')
-    const [url, setUrl] = useState(null)
-    const [collections, setCollections] = useState([]);
-
-    const [images, setImages] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
+    const [collections, setCollections] = useState([]);
     const [imageFileNames, setImageFileNames] = useState([]);
-
+    const [images, setImages] = useState([]);
 
     const handleSubmit = async () => {
         try {
-            const newProduct = await addDoc(collection(db, 'products'), {
+            const docRef = doc(db, 'products', params.id);
+
+            const uniqueImages = imageFileNames.filter((value, index, array) => array.indexOf(value) === index);
+
+            const data = {
                 name: title,
                 description: description,
                 pricing: pricing,
@@ -41,41 +46,32 @@ const AddProduct = () => {
                 status: 1,
                 type: 'Merchandise',
                 collection: dropDownCollection,
-                images: imageFileNames,
-            });
+                images: uniqueImages,
+            };
+
+            await updateDoc(docRef, data)
+            .then(docRef => {
+                console.log('updated')
+            })
+            .catch(err => {
+                console.log(err);
+            })
 
             images.forEach(async (image) => {
-                const imageRef = ref(storage, `${newProduct.id}/${image.name}`);
+                const imageRef = ref(storage, `${params.id}/${image.name}`);
                 await uploadBytes(imageRef, image).then(() => {
                     getDownloadURL(imageRef).then((url) => {
-                        setUrl(url);
+                        console.log('image upload success');
                     }).catch((err) => { console.warn(err, 'error getting the image.') });
-
                     setImages([]);
                 });
             })
         } catch (err) {
             console.log(err);
         }
+
+        navigate(-1)
     }
-
-    useEffect(() => {
-        const getCollections = async () => {
-
-            const docRef = collection(db, 'collections');
-            const docSnap = await getDocs(docRef);
-
-            const temp = []
-
-            docSnap.forEach(snap => {
-                temp.push({ ...snap.data(), id: snap.id });
-            })
-
-            setCollections(temp);
-        }
-
-        getCollections();
-    }, [])
 
     const onSelectFile = (e) => {
         const selectedFiles = e.target.files;
@@ -94,12 +90,65 @@ const AddProduct = () => {
         setSelectedImages((prevImages) => prevImages.concat(imagesArray));
     }
 
+    useEffect(() => {
+        const getProduct = async () => {
+            const docRef = doc(db, 'products', params.id);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                setDataProduct(docSnap.data());
+                setTitle(docSnap.data().name);
+                setDescription(docSnap.data().description);
+                setPricing(docSnap.data().pricing);
+                setCostPerItem(docSnap.data().costPerItem);
+                setQuantity(docSnap.data().inventory);
+            }else {
+                console.log('Product not found.');
+            }
+        }
+
+        const getCollections = async () => {
+
+            const docRef = collection(db, 'collections');
+            const docSnap = await getDocs(docRef);
+
+            const temp = []
+
+            docSnap.forEach(snap => {
+                temp.push({ ...snap.data(), id: snap.id });
+            })
+
+            setCollections(temp);
+        }
+        
+        getProduct();
+        getCollections();
+    
+    }, [])
+    
+    useEffect(() => {
+        if(dataProduct) {
+            dataProduct.images.forEach(async (image) => {
+                const imageRef = ref(storage, `${params.id}/${image}`);
+                await getDownloadURL(imageRef).then((url => {
+                    setSelectedImages((prevImages) => prevImages.concat(url))
+                }));
+            });
+
+            setImageFileNames((prevImages) => prevImages.concat(dataProduct.images));
+
+        }
+
+    }, [dataProduct])
+
+    // console.log(title)
+
+
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
                 <div className="flex flex-row gap-4 items-center">
                     <button onClick={()=>{navigate(-1)}} className="border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
-                    <p className='text-xl font-medium'>Add Product</p>
+                    <p className='text-xl font-medium'>{title}</p>
                 </div>
                 <button onClick={handleSubmit} className='bg-accent-default text-white py-2 px-3 rounded-md hover:bg-accent-light'>Save</button>
             </div>
@@ -109,12 +158,12 @@ const AddProduct = () => {
                     <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
                         <div className="flex flex-col">
                             <label htmlFor="title">Title</label>
-                            <input onChange={(e) => { setTitle(e.target.value) }} type="text" name='title' id='title' className='border rounded-md p-1 px-2' />
+                            <input onChange={(e) => {setTitle(e.target.value)}} value={title} type="text" name='title' id='title' className='border rounded-md p-1 px-2' />
                         </div>
 
                         <div className="flex flex-col">
                             <label htmlFor="description">Description</label>
-                            <textarea onChange={(e) => { setDescription(e.target.value) }} name="description" id="" cols="30" rows="4" className='resize-none border rounded-md p-1 px-2'></textarea>
+                            <textarea onChange={(e) => {setDescription(e.target.value)}} value={description} name="description" id="" cols="30" rows="4" className='resize-none border rounded-md p-1 px-2'></textarea>
                         </div>
                     </div>
 
@@ -147,14 +196,14 @@ const AddProduct = () => {
 
                         <div className="flex flex-col">
                             <label htmlFor="price">Price</label>
-                            <input onChange={(e) => { setPricing(e.target.value) }} type="number" name='price' id='price' className='border rounded-md p-1 px-2 w-fit' />
+                            <input onChange={(e) => { setPricing(e.target.value) }} value={pricing} type="number" name='price' id='price' className='border rounded-md p-1 px-2 w-fit' />
                         </div>
 
                         <hr />
 
                         <div className="flex flex-col">
                             <label htmlFor="cost-per-item">Cost per item</label>
-                            <input onChange={(e) => { setCostPerItem(e.target.value) }} type="number" name='cost-per-item' id='cost-per-item' className='border rounded-md p-1 px-2 w-fit' />
+                            <input onChange={(e) => { setCostPerItem(e.target.value) }} value={costPerItem} type="number" name='cost-per-item' id='cost-per-item' className='border rounded-md p-1 px-2 w-fit' />
                         </div>
                     </div>
                 </div>
@@ -179,7 +228,7 @@ const AddProduct = () => {
 
                         <div className="flex flex-col">
                             <label htmlFor="price">Quantity</label>
-                            <input onChange={(e) => { setQuantity(e.target.value) }} type="number" name='price' id='price' className='border rounded-md p-1 px-2 w-full' />
+                            <input onChange={(e) => { setQuantity(e.target.value) }} value={quantity} type="number" name='price' id='price' className='border rounded-md p-1 px-2 w-full' />
                         </div>
                     </div>
                 </div>
@@ -190,4 +239,4 @@ const AddProduct = () => {
     )
 }
 
-export default AddProduct
+export default ShowProduct

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {auth, db} from '../../../firebase';
+import { auth, db } from '../../../firebase';
 import {
   collection,
   getDocs,
@@ -25,54 +25,56 @@ const Products = () => {
 
       const temp = []
 
-      docSnap.forEach(snap => {
-        temp.push(snap.data());
+      docSnap.forEach((snap) => {
+        temp.push({ ...snap.data(), id: snap.id });
       })
 
       setProducts(temp);
     }
-    
+
     getData();
-    
+
   }, [])
 
   return (
-    <div className="flex flex-col gap-10">
-      <div className="flex flex-row justify-between">
-        <p>Products</p>
+    <div className="flex flex-col gap-5">
+      <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
+        <p className='text-xl font-bold'>Products</p>
 
         <div className="flex flex-row gap-5">
           {/* <button>Export</button>
           <button>Import</button> */}
-          <button onClick={()=>{navigate('add')}}>Add Product</button>
+          <button onClick={() => { navigate('add') }} className='bg-accent-default text-white py-2 px-3 rounded-md hover:bg-accent-light'>Add Product</button>
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr className='text-left bg-primary'>
-            <th className='p-2'>Product</th>
-            <th>Status</th>
-            <th>Inventory</th>
-            <th>Type</th>
-          </tr>
-        </thead>
+      <div className="flex bg-white p-5 rounded-md shadow-sm">
+        <table className='w-full rounded-md overflow-hidden'>
+          <thead>
+            <tr className='text-left bg-accent-default text-white'>
+              <th className='p-2'>Product</th>
+              <th>Status</th>
+              <th>Inventory</th>
+              <th>Type</th>
+            </tr>
+          </thead>
 
-        <tbody>
+          <tbody>
             {products.map((product, index) => {
-              return <TableRow key={index} product={product}/>
+              return <TableRow key={index} product={product} navigate={navigate} />
             })}
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
 
 
     </div>
   )
 }
 
-const TableRow = ({ product }) => {
+const TableRow = ({ product, navigate }) => {
   return (
-    <tr className='border-b'>
+    <tr className='border-b cursor-pointer hover:bg-accent-light transition-bg duration-200' onClick={() => { navigate(`${product.id}`) }}>
       <td className='p-1'>{product.name}</td>
       <td>{product.status}</td>
       <td>{product.inventory}</td>

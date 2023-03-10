@@ -22,6 +22,7 @@ import Collections from './pages/admin/collections/Collections';
 import AddProduct from './pages/admin/products/AddProduct';
 import AddCollection from './pages/admin/collections/AddCollection';
 import ShowCollection from './pages/admin/collections/ShowCollection';
+import ShowProduct from './pages/admin/products/ShowProduct';
 
 const App = () => {
   
@@ -43,6 +44,7 @@ const App = () => {
             <Route path='orders' element={<Orders />}></Route>
             <Route path='products' element={<Products />}></Route>
             <Route path='products/add' element={<AddProduct />}></Route>
+            <Route path='products/:id' element={<ShowProduct />}></Route>
             <Route path='collections' element={<Collections />}></Route>
             <Route path='collections/add' element={<AddCollection />}></Route>
             <Route path='collections/:id' element={<ShowCollection />}></Route>

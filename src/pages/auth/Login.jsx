@@ -73,7 +73,7 @@ const Login = () => {
         <>
             {localStorage.getItem('message') && <Toast message={localStorage.getItem('message')}/>}
             
-            <div className="flex flex-col justify-center items-center flex-1">
+            <div className="flex flex-col justify-center items-center flex-1 py-10">
 
                 <div className="flex flex-col rounded-md shadow-md min-w-[40%] py-5 px-3 gap-5 ">
 
@@ -96,7 +96,7 @@ const Login = () => {
                             <a href='#' className=' text-xs text-right'>Forgot password?</a>
                         </div>
 
-                        <button type='submit' className='bg-primary p-2 mt-4'>Submit</button>
+                        <button type='submit' className='bg-accent-default text-white p-2 mt-4'>Submit</button>
 
                         <p onClick={()=>{location.href='/register'}} className='text-sm text-center underline cursor-pointer'>Don't have an account? Register here.</p>
                     </form>
