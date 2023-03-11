@@ -50,7 +50,7 @@ const ProductsList = () => {
                 temp.push({ ...snap.data(), id: snap.id });
             })
 
-            setCollections(temp)
+            setCollections(temp);
 
             collections.forEach((collection) => {
                 var tempObj = {}
@@ -100,6 +100,7 @@ const ProductsList = () => {
 
             <div className="relative grid grid-rows-2 grid-cols-5 w-full">
                 {productList.map((product, index) => {
+                    console.log(product)
                     return <ProductCard
                     key={index}
                     index={index}

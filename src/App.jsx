@@ -40,7 +40,8 @@ const App = () => {
             <Route path='products' element={<ProductsList />} />
             <Route path='about' element={<AboutUs />} />
             <Route path='cart' element={<Cart/>}/>
-            <Route path='product' element={<Product/>}/>
+
+            <Route path='product/:id' element={<Product/>}/>
 
               <Route path='account' element={<Profile/>}> 
                 <Route index element={<ManageAccount/>}/>
