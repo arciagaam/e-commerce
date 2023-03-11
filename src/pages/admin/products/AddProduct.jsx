@@ -42,6 +42,9 @@ const AddProduct = () => {
                 type: 'Merchandise',
                 collection: dropDownCollection,
                 images: imageFileNames,
+            })
+            .then(() => {
+                
             });
 
             images.forEach(async (image) => {
@@ -55,7 +58,6 @@ const AddProduct = () => {
                 });
             })
 
-            await setDoc
         } catch (err) {
             console.log(err);
         }

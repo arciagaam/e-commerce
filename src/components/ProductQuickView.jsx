@@ -38,7 +38,6 @@ const ProductQuickView = ({productName, productPrice, isActive, setIsActive, ind
     }, [])
 
     const handleAddToCart = async () => {
-        // setCart((prevCart) => prevCart.concat(product.id));
         if(localStorage.getItem('user')){
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
