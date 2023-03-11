@@ -1,7 +1,7 @@
 import React from "react"
 import NumberCounter from "./NumberCounter"
 
-const ProductQuickView = ({productName, isActive, setIsActive}) => {
+const ProductQuickView = ({productName, productPrice, isActive, setIsActive, index, productImages}) => {
 
     return (
         <div className='flex absolute inset-0 z-20 justify-center items-center bg-gray-900/25'>
@@ -11,12 +11,12 @@ const ProductQuickView = ({productName, isActive, setIsActive}) => {
                 </div>
                 <div className="flex flex-row columns-2 gap-9 px-20 justify-center items-center">
                     <div className="flex">
-                        <img src="/images/cat2.png" alt="" />
+                        <img src={productImages[index]} alt="" />
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className=" flex flex-col titlePrice gap-4 font-semibold">
                             <p className="text-2xl">{productName}</p>
-                            <p className="text-2xl">₱500</p>
+                            <p className="text-2xl">₱{productPrice}</p>
                         </div>
 
                         <div className="inclusions">

@@ -16,9 +16,7 @@ const Navbar = () => {
   useEffect(() => {
     if (localStorage.getItem('user')) {
       const { role } = JSON.parse(localStorage.getItem('user'));
-      if (role == 0) {
-        navigate('/');
-      } else {
+      if (role == 1) {
         navigate('/admin');
       }
     }

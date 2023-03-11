@@ -2,7 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import ProductQuickView from './ProductQuickView'
 
-const ProductCard = ({ image, productName}) => {
+const ProductCard = ({ image, productName, productPrice, index, productImages}) => {
 
     const [isHovering, setIsHovering] = useState(false)
     const [isActive, setIsActive] = useState(false);
@@ -29,7 +29,7 @@ const ProductCard = ({ image, productName}) => {
                     )}
 
                     <div className="absolute inset-0 bg-cover bg-center">
-                        <img src={`/images/${image}`} alt="" />
+                        <img src={productImages[index]} alt="" />
                     </div>
                 </div>
 
@@ -39,9 +39,12 @@ const ProductCard = ({ image, productName}) => {
             </div>
                       
             {isActive && <ProductQuickView
+                index={index}
                 productName={productName}
+                productPrice={productPrice}
                 isActive={isActive}
                 setIsActive={setIsActive}
+                productImages={productImages}
             />}
         </>
 

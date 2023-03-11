@@ -24,7 +24,7 @@ const ManageAccount = () => {
                 </tbody>
             </table>
             <div className='flex flex-col justify-end'>
-                <button className='w-56 p-3 text-lg bg-cyan-600'>+ ADD NEW ADDRESS</button>
+                <button className='w-56 p-3 text-lg bg-accent-default'>+ ADD NEW ADDRESS</button>
             </div>
         </div>
     )

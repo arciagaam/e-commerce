@@ -26,8 +26,8 @@ const MyProfile = () => {
                 </div>
             </div>
             <div className="flex flex-col gap-3">
-                <button className='text-lg p-3 w-56 bg-cyan-600'>Edit Profile</button>
-                <button className='text-lg p-3 w-56 bg-cyan-600'>Set Password</button>
+                <button className='text-lg p-3 w-56 bg-accent-default'>Edit Profile</button>
+                <button className='text-lg p-3 w-56 bg-accent-default'>Set Password</button>
             </div>
         </div>
     )

@@ -26,7 +26,6 @@ const Profile = () => {
 
     return (
         <div className="flex flex-row columns-2 h-auto px-52 w-full">
-            <button onClick={handleSignOut}>Sign Out</button>
             <div className="flex w-1/5 flex-col">
                 <NavLink to='manageaccount'>
                     Manage My Account
@@ -37,6 +36,7 @@ const Profile = () => {
                 <NavLink to='addressbook'>
                     Address Book
                 </NavLink>
+                <button onClick={handleSignOut} className='text-left'>Sign Out</button>
             </div>
             <div className="flex flex-col w-4/5 gap-5">
                 <p className='text-2xl'>Manage My Account</p>
