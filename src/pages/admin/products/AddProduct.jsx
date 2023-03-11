@@ -22,17 +22,18 @@ const AddProduct = () => {
     const [quantity, setQuantity] = useState('');
 
     const [dropDownCollection, setDropDownCollection] = useState('')
-    const [url, setUrl] = useState(null)
     const [collections, setCollections] = useState([]);
 
     const [images, setImages] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
     const [imageFileNames, setImageFileNames] = useState([]);
+    const [imageDetails, setImageDetails] = useState([]);
+    const [product, setProduct] = useState({});
 
 
     const handleSubmit = async () => {
         try {
-            const newProduct = await addDoc(collection(db, 'products'), {
+            await addDoc(collection(db, 'products'), {
                 name: title,
                 description: description,
                 pricing: pricing,
@@ -42,20 +43,30 @@ const AddProduct = () => {
                 type: 'Merchandise',
                 collection: dropDownCollection,
                 images: imageFileNames,
+            }).then((newProduct) => {
+                const temp = [];
+
+                images.forEach(async (image) => {
+                    const imageRef = ref(storage, `${newProduct.id}/${image.name}`);
+                    await uploadBytes(imageRef, image).then(() => {
+                        getDownloadURL(imageRef).then((url) => {
+                            let imageObj = { fileName: image.name, url: url };
+                            temp.push(imageObj);
+                            // setImageDetails((prevImages) => prevImages.concat(imageObj))
+                        }).catch((err) => { console.warn(err, 'error getting the image.') });
+
+                    });
+                    setImageDetails(temp);
+                    console.log(imageDetails);
+                })
+
+                const imageDetailsRef = doc(db, 'products', `${newProduct.id}`);
+
+                updateDoc(imageDetailsRef, {
+                    images: imageDetails
+                });
             });
 
-            images.forEach(async (image) => {
-                const imageRef = ref(storage, `${newProduct.id}/${image.name}`);
-                await uploadBytes(imageRef, image).then(() => {
-                    getDownloadURL(imageRef).then((url) => {
-                        setUrl(url);
-                    }).catch((err) => { console.warn(err, 'error getting the image.') });
-
-                    setImages([]);
-                });
-            })
-
-            await setDoc
         } catch (err) {
             console.log(err);
         }
@@ -90,7 +101,7 @@ const AddProduct = () => {
         const imageFileNames = selectedFilesArray.map((file) => {
             return file.name;
         })
-        
+
         setImageFileNames((prevImages) => prevImages.concat(imageFileNames));
         setSelectedImages((prevImages) => prevImages.concat(imagesArray));
     }
@@ -99,7 +110,7 @@ const AddProduct = () => {
         <div className="flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
                 <div className="flex flex-row gap-4 items-center">
-                    <button onClick={()=>{navigate(-1)}} className="border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
+                    <button onClick={() => { navigate(-1) }} className="border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
                     <p className='text-xl font-medium'>Add Product</p>
                 </div>
                 <button onClick={handleSubmit} className='bg-accent-default text-white py-2 px-3 rounded-md hover:bg-accent-light'>Save</button>
