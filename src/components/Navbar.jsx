@@ -22,7 +22,9 @@ const Navbar = () => {
         navigate('/admin');
       }
     }
-  }, [])
+  }, []);
+
+  
 
   const activeClassName = 'px-5 text-accent-default'
 
@@ -38,6 +40,7 @@ const Navbar = () => {
           <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='products'> Shop </NavLink>
           <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='about'> About Us </NavLink>
           {user ? <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='profile'> Profile </NavLink> : <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='login'> Login / Register </NavLink>}
+          {user ? <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='cart'> Cart </NavLink> : null}
         </div>
       </div>
       <div className='font-display min-h-screen flex flex-col text-accent-dark'>

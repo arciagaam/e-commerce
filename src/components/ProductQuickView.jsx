@@ -1,7 +1,20 @@
 import React from "react"
+import { useNavigate } from "react-router-dom"
 import NumberCounter from "./NumberCounter"
 
 const ProductQuickView = ({productName, isActive, setIsActive}) => {
+
+    const navigate = useNavigate();
+
+    const handleAddToCart = () => {
+
+        if(localStorage.getItem('user')){
+            
+        }else {
+            navigate('/login')
+        }
+
+    }
 
     return (
         <div className='flex absolute inset-0 z-20 justify-center items-center bg-gray-900/25'>
@@ -29,7 +42,7 @@ const ProductQuickView = ({productName, isActive, setIsActive}) => {
                         </div>
                         <div className="flex flex-col gap-2">
                             <NumberCounter />
-                            <button className="text-sm p-2 bg-[#EFE3D9]">Add to Cart</button>
+                            <button onClick={handleAddToCart} className="text-sm p-2 bg-[#EFE3D9]">Add to Cart</button>
                         </div>
 
 
