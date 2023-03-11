@@ -1,15 +1,52 @@
-import React from "react"
+import React, { useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import NumberCounter from "./NumberCounter"
+import { db, auth } from "../firebase";
+import {
+    collection,
+    getDocs,
+    getDoc,
+    addDoc,
+    setDoc,
+    updateDoc,
+    doc,
+    deleteDoc,
+    serverTimestamp
+} from "firebase/firestore";
 
-const ProductQuickView = ({productName, productPrice, isActive, setIsActive, index, productImages}) => {
+const ProductQuickView = ({productName, productPrice, isActive, setIsActive, index, productImages, product}) => {
 
     const navigate = useNavigate();
 
-    const handleAddToCart = () => {
+    const [cart, setCart] = useState([]);
 
+    useEffect(() => {
+
+        const getData = async () => {
+            const docRef = doc(db, 'cart', auth.currentUser.uid);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                if(docSnap.data().cart){
+                    setCart([...docSnap.data()?.cart]);
+                }
+            }else {
+            }
+        }
+        getData();
+
+    }, [])
+
+    const handleAddToCart = async () => {
+        // setCart((prevCart) => prevCart.concat(product.id));
         if(localStorage.getItem('user')){
-            
+            const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
+
+            await addDoc(cartRef, {product_id:product.id})
+            .then(() => {console.log('success')})
+            .catch(() => {console.log('error')});
+
+            location.reload();
         }else {
             navigate('/login')
         }
