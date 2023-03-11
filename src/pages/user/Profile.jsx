@@ -27,7 +27,7 @@ const Profile = () => {
     return (
         <div className="flex flex-row columns-2 h-auto px-52 w-full">
             <div className="flex w-1/5 flex-col">
-                <NavLink to='manageaccount'>
+                <NavLink to='/account'>
                     Manage My Account
                 </NavLink>
                 <NavLink to='myprofile'>

@@ -42,11 +42,13 @@ const App = () => {
             <Route path='cart' element={<Cart/>}/>
             <Route path='product' element={<Product/>}/>
 
-            <Route path='profile' element={<Profile/>}> 
-              <Route index path='manageaccount' element={<ManageAccount/>}/>
-              <Route path='myprofile' element={<MyProfile/>}/>
-              <Route path='addressbook' element={<AddressBook/>}/>
-            </Route>
+              <Route path='account' element={<Profile/>}> 
+                <Route index element={<ManageAccount/>}/>
+                <Route path='myprofile' element={<MyProfile/>}/>
+                <Route path='addressbook' element={<AddressBook/>}/>
+              </Route>
+              
+            <Route path='product' element={<Product/>}/>
         </Route>
 
           <Route path='/admin' element={<AdminNavbar />}>

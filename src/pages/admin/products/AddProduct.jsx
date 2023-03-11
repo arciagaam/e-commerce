@@ -54,6 +54,8 @@ const AddProduct = () => {
                     setImages([]);
                 });
             })
+
+            await setDoc
         } catch (err) {
             console.log(err);
         }
@@ -81,7 +83,6 @@ const AddProduct = () => {
         const selectedFiles = e.target.files;
         const selectedFilesArray = Array.from(selectedFiles);
         setImages((prevImages) => prevImages.concat(selectedFilesArray));
-
         const imagesArray = selectedFilesArray.map((file) => {
             return URL.createObjectURL(file);
         })

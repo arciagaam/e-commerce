@@ -81,11 +81,6 @@ const ProductsList = () => {
         }
     }, [productList])
 
-    useEffect(() => {
-        console.log(collections)
-    }, [collections])
-
-
     return (
 
         <div className="flex flex-col w-full gap-12">
@@ -108,7 +103,7 @@ const ProductsList = () => {
                     return <ProductCard
                     key={index}
                     index={index}
-                    image={'cat2.png'}
+                    product={product}
                     productName={product.name}
                     productPrice={product.costPerItem}
                     productImages={productImages}
