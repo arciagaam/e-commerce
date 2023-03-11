@@ -6,15 +6,14 @@ const Dropdown = ({ title, content }) => {
     const [selectedOption, setSelectedOption] = useState(null);
 
     let ddRef = useRef();
-
-    useEffect(() => {
-        let handler = (e) => {
-            if (!ddRef.current.contains(e.target)) {
-                setIsActive(false)
-            }
+    document.addEventListener("mousedown", (e) => {
+        if (!ddRef?.current?.contains(e.target) && isActive) {
+            setIsActive(false)
         }
-        document.addEventListener("mousedown", handler)
+
+        e.stopPropagation();
     })
+
 
     function handleSelectOption(option) {
         setSelectedOption(option);

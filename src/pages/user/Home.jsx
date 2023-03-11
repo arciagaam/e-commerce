@@ -1,7 +1,59 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Toast from '../../components/Toast';
+import { db, storage } from '../../firebase';
+import {
+    collection,
+    getDocs,
+    getDoc,
+    addDoc,
+    setDoc,
+    updateDoc,
+    doc,
+    deleteDoc,
+} from "firebase/firestore";
+import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 const Home = () => {
+
+    const [popularProducts, setPopularProducts] = useState([]);
+    const [popularImageNames, setPopularImageNames] = useState([]);
+    const [popularImages, setPopularImages] = useState([]);
+
+    useEffect(() => {
+
+        const getData = async () => {
+            const docRef = collection(db, 'products');
+            const docSnap = await getDocs(docRef);
+
+            const temp = [];
+
+            docSnap.forEach((snap) => {
+                temp.push({...snap.data(), id:snap.id});
+            })
+
+            setPopularProducts(temp);
+        }
+
+        getData();
+
+    }, [])
+
+    useEffect(() => {
+        if(popularProducts) {
+            
+            popularProducts.forEach(async (product) => {
+                const productImage = product.images[0];
+                const imageRef = ref(storage, `${product.id}/${productImage}`);
+                await getDownloadURL(imageRef).then((url => {
+                    setPopularImages((prevImages) => prevImages.concat(url))
+                }));
+            });
+            
+            setPopularImageNames((prevImages) => prevImages.concat(popularProducts.images));
+        }
+    }, [popularProducts])
+
+
     return (
         <>
             {localStorage.getItem('message') && <Toast message={localStorage.getItem('message')} />}
@@ -24,7 +76,7 @@ const Home = () => {
                     <div className="flex flex-col px-10 gap-20">
 
                         {/* Categories */}
-                        <div className="flex flex-col gap-5">
+                        <div className="flex flex-col gap-5 justify-between">
                             <p className='self-center'>Categories</p>
 
                             <Category
@@ -40,7 +92,6 @@ const Home = () => {
                                 subTitle={'Lorem Ipsum'}
                                 content={'Lorem ipsum dolor sit amet consectetur. Sed imperdiet mi massa convallis amet massa nisi nibh. Nisl hendrerit maecenas nec non arcu adipiscing. Molestie sagittis malesuada feugiat erat mattis malesuada quis. Nisi rhoncus a sed ullamcorper odio. Imperdiet ultrices quis faucibus ipsum sollicitudin vulputate vitae.'}
                                 flipped={1}
-
                             />
                         </div>
 
@@ -50,19 +101,10 @@ const Home = () => {
                     <div className="flex flex-col gap-5">
                         <p className='self-center'>See What's Popular</p>
 
-                        <div className="flex flex-row overflow-auto px-10 gap-10">
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
-                            <PopularCard image={'cat2.png'} title={'Title Sample'} price={'P 1,200'} />
+                        <div className="flex flex-row overflow-auto px-10 gap-10 items-center justify-center py-20">
+                            {popularProducts.map((product, index) => {
+                                return <PopularCard key={index} index={index} product={product} popularImages={popularImages}/>
+                            })}
                         </div>
                     </div>
                 </div>
@@ -92,16 +134,16 @@ const Category = ({ image, title, subTitle, content, flipped = 0 }) => {
     )
 }
 
-const PopularCard = ({ image, title, price }) => {
+const PopularCard = ({ product, index, popularImages }) => {
     return (
         <div className="flex flex-col min-w-fit">
             <div className="flex">
-                <img className="h-[240px] w-auto" src={`images/${image}`} alt="" />
+                <img className="h-[240px] w-auto" src={popularImages[index]} alt="product_image" />
             </div>
 
             <div className="flex flex-col">
-                <p className='text-lg font-bold'>{title}</p>
-                <p className='text-sm'>{price}</p>
+                <p className='text-lg font-bold'>{product.name}</p>
+                <p className='text-sm'>{product.price}</p>
             </div>
         </div>
     )

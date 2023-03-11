@@ -26,7 +26,7 @@ import Profile from './pages/user/Profile';
 import ManageAccount from './components/profile/ManageAccount';
 import MyProfile from './components/profile/MyProfile';
 import AddressBook from './components/profile/AddressBook';
-
+import Cart from './pages/user/Cart';
 const App = () => {
   
   return (
@@ -34,15 +34,19 @@ const App = () => {
         <Routes>
           <Route path='/' element={<Navbar />}>
             <Route index element={<Home />} />
+            <Route path='login' element={<Login />} />
+            <Route path='register' element={<Register />} />
             <Route path='shop' element={<ShopLanding />} />
             <Route path='products' element={<ProductsList />} />
             <Route path='about' element={<AboutUs />} />
-            <Route path='login' element={<Login />} />
-            <Route path='register' element={<Register />} />
-            <Route path='profile' element={<Profile/>}>
-            <Route index path='manageaccount' element={<ManageAccount/>}/>
-            <Route path='myprofile' element={<MyProfile/>}/>
-            <Route path='addressbook' element={<AddressBook/>}/>
+            <Route path='cart' element={<Cart/>}/>
+
+            <Route path='profile' element={<Profile/>}> 
+              <Route index path='manageaccount' element={<ManageAccount/>}/>
+              <Route path='myprofile' element={<MyProfile/>}/>
+              <Route path='addressbook' element={<AddressBook/>}/>
+            <Route/>
+
             <Route path='product' element={<Product/>}/>
           </Route>
         </Route>

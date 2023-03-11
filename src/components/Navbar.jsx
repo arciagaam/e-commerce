@@ -20,7 +20,12 @@ const Navbar = () => {
         navigate('/admin');
       }
     }
-  }, [])
+  }, []);
+
+  
+
+  const activeClassName = 'px-5 text-accent-default'
+
 
   return (
     <>
@@ -30,10 +35,10 @@ const Navbar = () => {
         </NavLink>
 
         <div className="flex flex-row gap-20 text-base">
-          <NavLink to='collections'> Collections </NavLink>
-          <NavLink to='shop'> Shop </NavLink>
-          <NavLink to='about'> About Us </NavLink>
-          {user ? <NavLink to='profile'> Profile </NavLink> : <NavLink to='login'> Login / Register </NavLink>}
+          <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='products'> Shop </NavLink>
+          <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='about'> About Us </NavLink>
+          {user ? <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='profile'> Profile </NavLink> : <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='login'> Login / Register </NavLink>}
+          {user ? <NavLink className={({ isActive }) => isActive ? activeClassName : 'hover:text-accent-default px-5'} to='cart'> Cart </NavLink> : null}
         </div>
       </div>
       <div className='font-display min-h-screen flex flex-col text-accent-dark'>
