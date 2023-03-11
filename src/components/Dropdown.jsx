@@ -30,8 +30,8 @@ const Dropdown = ({ title, content }) => {
                     {isActive && <div className="flex flex-col absolute z-[3] text-sm top-14 left-2 p-2 bg-[#f4f4f4]">
                         {content.map(content => {
                             return (
-                                <p key={content.value} onClick={() => handleSelectOption(content)}>
-                                    {content.label}
+                                <p key={content.id} onClick={() => handleSelectOption(content)}>
+                                    {content.title}
                                 </p>
                             )
                         })}
