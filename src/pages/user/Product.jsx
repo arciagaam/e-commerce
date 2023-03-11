@@ -1,6 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import NumberCounter from '../../components/NumberCounter';
 import Rating from '../../components/Rating';
+import { db, storage } from '../../firebase';
+import {
+    collection,
+    getDocs,
+    getDoc
+} from 'firebase/firestore';
 
 const Product = () => {
 
@@ -9,6 +15,20 @@ const Product = () => {
     const submit = (event) => {
         alert('pasok')
     }
+
+    const prodCollection = collection (db, 'products')
+
+    useEffect(() => {
+        const getCollection = async () => {
+            try {
+            const data = await getDocs(prodCollection);
+            console.log(data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        getCollection();
+    }, []);
 
     return (
     <div className="flex flex-col items-center justify-center h-full gap-16 px-20">
@@ -29,6 +49,7 @@ const Product = () => {
                     <p className='text-m'>Dried Flower Bouqet</p>
                     <p className='text-m'>Fairy Lights</p>
                     <p className='text-m'>14" Box</p>
+                    <NumberCounter/>                 
                 </div>
 
                 <div className="flex flex-col pt-5">
