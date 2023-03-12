@@ -33,8 +33,10 @@ const ProductCard = ({ productName, productPrice, index, productImages, product 
                         </div>
                     }
                     <div className="relative inset-0 flex flex-col" onClick={() => {navigate(`/product/${product.id}`)}}>
+                        {product.images[1] && 
                         <img className={`${isHovering ? 'opacity-0' : 'opacity-100'} h-full object-cover z-[2] transition-opacity duration-500 ease-in-out`} src={product.images[1].url} alt="" />
-                        <img className='absolute h-full object-cover z-[1]' src={product.images[2].url} alt="" />
+                        }
+                        <img className='absolute h-full object-cover z-[1]' src={product.images[0].url} alt="" />
                     </div>
  
                     

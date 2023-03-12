@@ -23,9 +23,14 @@ const ProductsList = () => {
     const [productImages, setProductImages] = useState([])
     const [collections, setCollections] = useState([])
     const [selectedCollection, setSelectedCollection] = useState({})
+    const [selectedFilter, setSelectedFilter] = useState({})
 
-    const callbackFunction = (selectedOption) => {
+    const callbackCollection = (selectedOption) => {
         setSelectedCollection(selectedOption);
+    }
+
+    const callbackFilter = (selectedOption) => {
+        setSelectedFilter(selectedOption);
     }
 
     useEffect(() => {
@@ -49,6 +54,16 @@ const ProductsList = () => {
 
         getProductList();
     }, [selectedCollection])
+
+    useEffect(() => {
+        if (selectedFilter.id == 'LtoH') {
+            setProductList((prevProductList) => productList.sort((a,b) => b.pricing - a.pricing));
+        }
+
+        if (selectedFilter.id == 'HtoL') {
+            setProductList((prevProductList) => productList.sort((a,b) => a.pricing - b.pricing));
+        }
+    }, [selectedFilter])
 
     useEffect(() => {
 
@@ -103,20 +118,25 @@ const ProductsList = () => {
                     <Dropdown
                         title={'Category'}
                         content={collections}
-                        setSelected={callbackFunction}
+                        setSelectedColl={callbackCollection}
                     />
 
-                    <Dropdown title={'Filter'} content={[
+                    <Dropdown 
+                    title={'Filter'} 
+                    content={[
                         { title: 'Price: Lowest to Highest', id: 'LtoH' },
                         { title: 'Price: Highest to Lowest', id: 'HtoL' }
-                    ]} />
+                    ]}
+                    setSelectedFilter={callbackFilter}
+                    />
                 </div>
 
             </div>
 
             <div className="relative grid grid-rows-2 grid-cols-5 w-full">
-                {productList.map((product, index) => {
-                    console.log(product)
+                {
+                    productList.map((product, index) => {
+                    console.log(product.pricing)
                     return <ProductCard
                         key={index}
                         index={index}

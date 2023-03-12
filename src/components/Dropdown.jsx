@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 
-const Dropdown = ({ title, content, setSelected }) => {
+const Dropdown = ({ title, content, setSelectedColl, setSelectedFilter }) => {
     const [isActive, setIsActive] = useState(false);
     const [selectedOption, setSelectedOption] = useState(null);
 
@@ -18,8 +18,11 @@ const Dropdown = ({ title, content, setSelected }) => {
     function handleSelectOption(option) {
         setSelectedOption(option);
         setIsActive(false);
-        setSelected(option);
-        console.log(setSelected);
+        if (title == 'Category') {
+            setSelectedColl(option);
+        } else {
+            setSelectedFilter(option);
+        }
     }
 
     return (
