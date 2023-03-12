@@ -101,6 +101,13 @@ const ShowProduct = () => {
                 setPricing(docSnap.data().pricing);
                 setCostPerItem(docSnap.data().costPerItem);
                 setQuantity(docSnap.data().inventory);
+
+                const temp = docSnap.data().images.map(image => {
+                    return image.url;
+                })
+
+                setSelectedImages(temp);
+
             }else {
                 console.log('Product not found.');
             }
@@ -125,21 +132,6 @@ const ShowProduct = () => {
     
     }, [])
     
-    useEffect(() => {
-        if(dataProduct) {
-            dataProduct.images.forEach(async (image) => {
-                const imageRef = ref(storage, `${params.id}/${image}`);
-                await getDownloadURL(imageRef).then((url => {
-                    setSelectedImages((prevImages) => prevImages.concat(url))
-                }));
-            });
-
-            setImageFileNames((prevImages) => prevImages.concat(dataProduct.images));
-
-        }
-
-    }, [dataProduct])
-
     // console.log(title)
 
 
@@ -176,7 +168,7 @@ const ShowProduct = () => {
                                 selectedImages.map((image, index) => {
                                     return (
                                         <div key={index} className='flex flex-col justify-center items-center w-[30%] border'>
-                                            <img src={image} alt={'product'} onClick={() => setSelectedImages(selectedImages.filter((e) => e !== image))} className='object-contain' />
+                                            <img src={image} alt={'product'} onClick={() => setSelectedImages(selectedImages.filter((e) => e !== image))} className='object-cover h-full' />
                                         </div>
                                     )
                                 })

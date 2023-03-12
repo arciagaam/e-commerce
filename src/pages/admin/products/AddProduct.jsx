@@ -43,29 +43,27 @@ const AddProduct = () => {
                 type: 'Merchandise',
                 collection: dropDownCollection,
                 images: imageFileNames,
-            }).then((newProduct) => {
-                const temp = [];
+            }).then(async (newProduct) => {
 
-                images.forEach(async (image) => {
+                async function uploadImage(image) {
                     const imageRef = ref(storage, `${newProduct.id}/${image.name}`);
-                    await uploadBytes(imageRef, image).then(() => {
-                        getDownloadURL(imageRef).then((url) => {
-                            let imageObj = { fileName: image.name, url: url };
-                            temp.push(imageObj);
-                            // setImageDetails((prevImages) => prevImages.concat(imageObj))
-                        }).catch((err) => { console.warn(err, 'error getting the image.') });
 
-                    });
-                    setImageDetails(temp);
-                    console.log(imageDetails);
-                })
+                    const response = await uploadBytes(imageRef, image);
+                    const url = await getDownloadURL(response.ref);
+                    return url;
+                }
 
+                const imagePromises = Array.from(images, async (image) => { return ({url: await uploadImage(image), file_name:image.name})});
+                const imageRes = await Promise.all(imagePromises);
+
+                // SET URLS
                 const imageDetailsRef = doc(db, 'products', `${newProduct.id}`);
-
-                updateDoc(imageDetailsRef, {
-                    images: imageDetails
+                await updateDoc(imageDetailsRef, {
+                    images: imageRes
                 });
-            });
+
+                navigate(`./../${newProduct.id}`);
+            })
 
         } catch (err) {
             console.log(err);
