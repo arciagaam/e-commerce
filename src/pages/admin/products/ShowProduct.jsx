@@ -208,7 +208,7 @@ const ShowProduct = () => {
                             <select name="collection" id="collection" className='border rounded-md p-1 px-2 w-full' onChange={(e) => { setDropDownCollection(e.target.value) }}>
                                 <option value="none">None</option>
                                 {collections.map((collection, index) => {
-                                    return <option key={index} value={collection.id}>{collection.title}</option>
+                                    return <option key={index} value={collection.id} selected={dataProduct.collection == collection.id ? true : null }>{collection.title}</option>
                                 })}
                             </select>
                         </div>
