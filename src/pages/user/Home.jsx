@@ -118,11 +118,10 @@ const Category = ({ image, title, subTitle, content, flipped = 0 }) => {
 }
 
 const PopularCard = ({ product, index }) => {
-    console.log(product)
     return (
         <div className="flex flex-col min-w-fit">
             <div className="flex">
-                <img className="h-[240px] w-auto" src={product.images[0]} alt="product_image" />
+                <img className="h-[240px] w-auto" src={product.images[0].url} alt="product_image" />
             </div>
 
             <div className="flex flex-col">

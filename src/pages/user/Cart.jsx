@@ -1,6 +1,55 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { db, storage } from '../../firebase';
+import {
+  collection,
+  getDocs,
+  getDoc,
+  doc
+} from 'firebase/firestore';
 
 const Cart = () => {
+  const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([])
+
+  useEffect(() => {
+    if (localStorage.getItem('user')) {
+      const { uid } = JSON.parse(localStorage.getItem('user'));
+
+      const getCartItems = async () => {
+        const cartRef = collection(db, `users/${uid}/cart`);
+        const cartDoc = await getDocs(cartRef);
+
+        if (cartDoc) {
+          let cart = [];
+          cartDoc.forEach(snap => {
+            cart.push({ ...snap.data(), id: snap.id });
+          })
+
+          const cartData = cart.map(async (cart) => {
+            const productRef = doc(db, 'products', cart.product_id);
+            const productDoc = await getDoc(productRef);
+
+            if (productDoc.exists()) {
+              return (productDoc.data())
+            }
+          });
+
+          Promise.all(cartData).then(values => {
+            setCartItems(values);
+          })
+        }
+      }
+
+      getCartItems();
+
+    } else {
+      navigate('/');
+    }
+
+  }, [])
+
+
   return (
     <div className="flex flex-col min-h-screen">
 
@@ -10,7 +59,11 @@ const Cart = () => {
 
         <div className="flex flex-col w-[60%] bg-slate-100">
 
-          <CartItem />
+          {cartItems &&
+            cartItems.map(cartItem => {
+              return <CartItem cartItem={cartItem} />
+            })
+          }
 
         </div>
 
@@ -31,15 +84,15 @@ const Cart = () => {
   )
 }
 
-const CartItem = () => {
+const CartItem = ({cartItem}) => {
   return (
 
     <div className="flex flex-row py-5 px-4 gap-5 justify-between">
 
       <div className="flex flex-row flex-1 gap-10">
         <div className="flex flex-col">
-          <div className="aspect-square h-[160px]">
-            <img className='object-cover' src="/images/cat1.png" alt="prod" />
+          <div className="aspect-square h-[160px] overflow-hidden">
+            <img className='object-cover' src={cartItem.images[0].url} alt="prod" />
           </div>
         </div>
 
@@ -48,8 +101,8 @@ const CartItem = () => {
           <div className="flex flex-row gap-10">
             <div className="flex flex-col">
               <div className="flex flex-row gap-10">
-                <p>Product Name</p>
-                <p>Product Price</p>
+                <p>{cartItem.name}</p>
+                <p>Php {cartItem.costPerItem}</p>
               </div>
 
             </div>

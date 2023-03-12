@@ -13,7 +13,7 @@ import {
     where,
     query
 } from "firebase/firestore";
-import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
+import { ref, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage';
 
 const ShowProduct = () => {
     const navigate = useNavigate();
@@ -26,17 +26,17 @@ const ShowProduct = () => {
     const [dataProduct, setDataProduct] = useState('');
     const [dropDownCollection, setDropDownCollection] = useState('');
 
-    const [selectedImages, setSelectedImages] = useState([]);
     const [collections, setCollections] = useState([]);
     const [imageFileNames, setImageFileNames] = useState([]);
-    const [images, setImages] = useState([]);
+
+    const [selectedImages, setSelectedImages] = useState([]); // URLS
+    const [images, setImages] = useState([]); // FILES
+    const [removedImages, setRemovedImages] = useState([]); // FROM DB
+    const [previousSelected, setPreviousSelected] = useState([]);
 
     const handleSubmit = async () => {
         try {
             const docRef = doc(db, 'products', params.id);
-
-            const uniqueImages = imageFileNames.filter((value, index, array) => array.indexOf(value) === index);
-
             const data = {
                 name: title,
                 description: description,
@@ -46,31 +46,48 @@ const ShowProduct = () => {
                 status: 1,
                 type: 'Merchandise',
                 collection: dropDownCollection,
-                images: uniqueImages,
             };
 
+            removedImages.map(async (ri) => {
+                const imageRef = ref(storage, `${params.id}/${ri}`);
+                await deleteObject(imageRef);
+            })
+
             await updateDoc(docRef, data)
-            .then(docRef => {
-                console.log('updated')
-            })
-            .catch(err => {
-                console.log(err);
-            })
+                .then(async () => {
 
-            images.forEach(async (image) => {
-                const imageRef = ref(storage, `${params.id}/${image.name}`);
-                await uploadBytes(imageRef, image).then(() => {
-                    getDownloadURL(imageRef).then((url) => {
-                        console.log('image upload success');
-                    }).catch((err) => { console.warn(err, 'error getting the image.') });
-                    setImages([]);
-                });
-            })
+                    if (images.length > 0) {
+                        async function uploadImage(image) {
+                            const imageRef = ref(storage, `${dataProduct.id}/${image.name}`);
+                            const response = await uploadBytes(imageRef, image);
+                            const url = await getDownloadURL(response.ref);
+                            return url;
+                        }
+
+                        const imagePromises = Array.from(images, async (image) => { return ({ url: await uploadImage(image), file_name: image.name }) });
+                        const imageRes = await Promise.all(imagePromises);
+
+                        // SET URLS
+                        const imageDetailsRef = doc(db, 'products', dataProduct.id);
+
+                        await updateDoc(imageDetailsRef, {
+                            images: [...imageRes, ...previousSelected]
+                        });
+                    } else {
+                        const imageDetailsRef = doc(db, 'products', dataProduct.id);
+
+                        await updateDoc(imageDetailsRef, {
+                            images: [...selectedImages]
+                        });
+                    }
+
+                    location.reload();
+
+                })
+
         } catch (err) {
-            console.log(err);
+            console.error(err);
         }
-
-        navigate(-1)
     }
 
     const onSelectFile = (e) => {
@@ -79,13 +96,13 @@ const ShowProduct = () => {
         setImages((prevImages) => prevImages.concat(selectedFilesArray));
 
         const imagesArray = selectedFilesArray.map((file) => {
-            return URL.createObjectURL(file);
+            return ({ url: URL.createObjectURL(file), file_name: file.name });
         })
 
         const imageFileNames = selectedFilesArray.map((file) => {
             return file.name;
         })
-        
+
         setImageFileNames((prevImages) => prevImages.concat(imageFileNames));
         setSelectedImages((prevImages) => prevImages.concat(imagesArray));
     }
@@ -95,7 +112,7 @@ const ShowProduct = () => {
             const docRef = doc(db, 'products', params.id);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-                setDataProduct(docSnap.data());
+                setDataProduct({ ...docSnap.data(), id: docSnap.id });
                 setTitle(docSnap.data().name);
                 setDescription(docSnap.data().description);
                 setPricing(docSnap.data().pricing);
@@ -103,12 +120,13 @@ const ShowProduct = () => {
                 setQuantity(docSnap.data().inventory);
 
                 const temp = docSnap.data().images.map(image => {
-                    return image.url;
+                    return ({ url: image.url, file_name: image.file_name });
                 })
 
                 setSelectedImages(temp);
+                setPreviousSelected(temp);
 
-            }else {
+            } else {
                 console.log('Product not found.');
             }
         }
@@ -126,12 +144,17 @@ const ShowProduct = () => {
 
             setCollections(temp);
         }
-        
+
         getProduct();
         getCollections();
-    
+
     }, [])
-    
+
+    const handleImageDelete = (e, image) => {
+        setRemovedImages((prevRemoved) => prevRemoved.concat(image.file_name));
+        setSelectedImages(selectedImages.filter((e) => e !== image))
+    }
+
     // console.log(title)
 
 
@@ -139,7 +162,7 @@ const ShowProduct = () => {
         <div className="flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
                 <div className="flex flex-row gap-4 items-center">
-                    <button onClick={()=>{navigate(-1)}} className="border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
+                    <button onClick={() => { navigate(-1) }} className="border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
                     <p className='text-xl font-medium'>{title}</p>
                 </div>
                 <button onClick={handleSubmit} className='bg-accent-default text-white py-2 px-3 rounded-md hover:bg-accent-light'>Save</button>
@@ -150,12 +173,12 @@ const ShowProduct = () => {
                     <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
                         <div className="flex flex-col">
                             <label htmlFor="title">Title</label>
-                            <input onChange={(e) => {setTitle(e.target.value)}} value={title} type="text" name='title' id='title' className='border rounded-md p-1 px-2' />
+                            <input onChange={(e) => { setTitle(e.target.value) }} value={title} type="text" name='title' id='title' className='border rounded-md p-1 px-2' />
                         </div>
 
                         <div className="flex flex-col">
                             <label htmlFor="description">Description</label>
-                            <textarea onChange={(e) => {setDescription(e.target.value)}} value={description} name="description" id="" cols="30" rows="4" className='resize-none border rounded-md p-1 px-2'></textarea>
+                            <textarea onChange={(e) => { setDescription(e.target.value) }} value={description} name="description" id="" cols="30" rows="4" className='resize-none border rounded-md p-1 px-2'></textarea>
                         </div>
                     </div>
 
@@ -168,7 +191,7 @@ const ShowProduct = () => {
                                 selectedImages.map((image, index) => {
                                     return (
                                         <div key={index} className='flex flex-col justify-center items-center w-[30%] border'>
-                                            <img src={image} alt={'product'} onClick={() => setSelectedImages(selectedImages.filter((e) => e !== image))} className='object-cover h-full' />
+                                            <img src={image.url} alt={'product'} onClick={(e) => { handleImageDelete(e, image) }} className='object-cover h-full' />
                                         </div>
                                     )
                                 })

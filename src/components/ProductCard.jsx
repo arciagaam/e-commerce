@@ -28,13 +28,13 @@ const ProductCard = ({ productName, productPrice, index, productImages, product 
 
                 <div className="relative flex flex-1 cursor-pointer overflow-hidden" onMouseOver={handleMouseOver} onMouseOut={handleMouseOut} >
                     {
-                        <div onClick={() => setIsActive(!isActive)} className={`${isHovering ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[100%]'} z-[3] absolute flex bottom-0 w-full py-2 items-center justify-center text-white bg-accent-default cursor-pointer transition-all duration-500`}>
+                        <div onClick={() => setIsActive(!isActive)} className={`${isHovering ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-[100%]'} z-[3] absolute flex bottom-0 w-full py-2 items-center justify-center text-white bg-accent-default cursor-pointer transition-all duration-500 ease-in-out`}>
                             <p>Quick View</p>
                         </div>
                     }
                     <div className="relative inset-0 flex flex-col" onClick={() => {navigate(`/product/${product.id}`)}}>
-                        <img className={`${isHovering ? 'opacity-0' : 'opacity-100'} h-full object-cover z-[2] transition-opacity duration-500`} src="images/cat1.png" alt="" />
-                        <img className='absolute h-full object-cover z-[1]' src="images/cat2.png" alt="" />
+                        <img className={`${isHovering ? 'opacity-0' : 'opacity-100'} h-full object-cover z-[2] transition-opacity duration-500 ease-in-out`} src={product.images[1].url} alt="" />
+                        <img className='absolute h-full object-cover z-[1]' src={product.images[2].url} alt="" />
                     </div>
  
                     
