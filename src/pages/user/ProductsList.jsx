@@ -12,7 +12,9 @@ import {
     updateDoc,
     doc,
     deleteDoc,
-  } from "firebase/firestore";
+    query,
+    where,
+} from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 const ProductsList = () => {
@@ -20,24 +22,35 @@ const ProductsList = () => {
     const [productList, setProductList] = useState([])
     const [productImages, setProductImages] = useState([])
     const [collections, setCollections] = useState([])
-    const [dropdownCollection, setDropdownCollection] = useState([])
+    const [selectedCollection, setSelectedCollection] = useState({})
 
-
+    const callbackFunction = (selectedOption) => {
+        setSelectedCollection(selectedOption);
+    }
 
     useEffect(() => {
         const getProductList = async () => {
+            console.log(selectedCollection.id);
             const docRef = collection(db, 'products')
-            const docSnap = await getDocs(docRef)
+            const q = query(docRef, where('collection', '==', selectedCollection.id));
+            const docSnap = await getDocs(q)
 
             const data = []
 
             docSnap.forEach((snap) => {
-                data.push({...snap.data(), id: snap.id})
+                console.log(snap.data().collection);
+                console.log(selectedCollection.id);
+                data.push({ ...snap.data(), id: snap.id })
             })
 
             setProductList(data)
 
-        } 
+        }
+
+        getProductList();
+    }, [selectedCollection])
+
+    useEffect(() => {
 
         const getCollections = async () => {
 
@@ -55,22 +68,21 @@ const ProductsList = () => {
             collections.forEach((collection) => {
                 var tempObj = {}
                 tempObj.label = collection.title,
-                // tempObj.value = collection.title.split(' ').join('')
-                tempObj.value = collection.id
+                    // tempObj.value = collection.title.split(' ').join('')
+                    tempObj.value = collection.id
 
                 setCollections((prevCollections) => prevCollections.concat(tempObj))
-                
+
             })
 
         }
 
-        getProductList()
         getCollections()
 
     }, [])
 
     useEffect(() => {
-        if(productList) {
+        if (productList) {
             productList.forEach(async (product) => {
                 const productImage = product.images[0]
                 const imageRef = ref(storage, `${product.id}/${productImage}`)
@@ -88,11 +100,15 @@ const ProductsList = () => {
                 <p className="text-5xl">Bouquets</p>
 
                 <div className="flex flex-row justify-between gap-7 z-3">
-                    <Dropdown title={'Category'} content={collections} />
+                    <Dropdown
+                        title={'Category'}
+                        content={collections}
+                        setSelected={callbackFunction}
+                    />
 
                     <Dropdown title={'Filter'} content={[
-                        { title: 'Price: Lowest to Highest', id: 'LtoH'},
-                        { title: 'Price: Highest to Lowest', id: 'HtoL'}
+                        { title: 'Price: Lowest to Highest', id: 'LtoH' },
+                        { title: 'Price: Highest to Lowest', id: 'HtoL' }
                     ]} />
                 </div>
 
@@ -102,15 +118,15 @@ const ProductsList = () => {
                 {productList.map((product, index) => {
                     console.log(product)
                     return <ProductCard
-                    key={index}
-                    index={index}
-                    product={product}
-                    productName={product.name}
-                    productPrice={product.costPerItem}
-                    productImages={productImages}
-                />
+                        key={index}
+                        index={index}
+                        product={product}
+                        productName={product.name}
+                        productPrice={product.costPerItem}
+                        productImages={productImages}
+                    />
                 })}
-                
+
             </div>
         </div>
     )
