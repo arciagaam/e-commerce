@@ -16,8 +16,6 @@ import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 const Home = () => {
 
     const [popularProducts, setPopularProducts] = useState([]);
-    const [popularImageNames, setPopularImageNames] = useState([]);
-    const [popularImages, setPopularImages] = useState([]);
 
     useEffect(() => {
 
@@ -37,21 +35,6 @@ const Home = () => {
         getData();
 
     }, [])
-
-    useEffect(() => {
-        if(popularProducts) {
-            
-            popularProducts.forEach(async (product) => {
-                const productImage = product.images[0];
-                const imageRef = ref(storage, `${product.id}/${productImage}`);
-                await getDownloadURL(imageRef).then((url => {
-                    setPopularImages((prevImages) => prevImages.concat(url))
-                }));
-            });
-            
-            setPopularImageNames((prevImages) => prevImages.concat(popularProducts.images));
-        }
-    }, [popularProducts])
 
 
     return (
@@ -103,7 +86,7 @@ const Home = () => {
 
                         <div className="flex flex-row overflow-auto px-10 gap-10 items-center justify-center py-20">
                             {popularProducts.map((product, index) => {
-                                return <PopularCard key={index} index={index} product={product} popularImages={popularImages}/>
+                                return <PopularCard key={index} index={index} product={product}/>
                             })}
                         </div>
                     </div>
@@ -134,11 +117,12 @@ const Category = ({ image, title, subTitle, content, flipped = 0 }) => {
     )
 }
 
-const PopularCard = ({ product, index, popularImages }) => {
+const PopularCard = ({ product, index }) => {
+    console.log(product)
     return (
         <div className="flex flex-col min-w-fit">
             <div className="flex">
-                <img className="h-[240px] w-auto" src={popularImages[index]} alt="product_image" />
+                <img className="h-[240px] w-auto" src={product.images[0]} alt="product_image" />
             </div>
 
             <div className="flex flex-col">

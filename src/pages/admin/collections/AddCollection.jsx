@@ -10,6 +10,7 @@ import {
     deleteDoc,
 } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
+import AddOn from '../../../components/AddOn';
 
 const AddCollection = () => {
 
@@ -17,17 +18,36 @@ const AddCollection = () => {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-
+    const [addOns, setAddOns] = useState([]);
 
     const handleSubmit = async() => {
         try {
-            await addDoc(collection(db, 'collections'), {
+            const newCollection = await addDoc(collection(db, 'collections'), {
                 title: title,
                 description: description,
+                addons: addOns
             })
+
+            navigate(`./../${newCollection.id}`);
         } catch (err) {
             console.log(err);
         }
+    }
+
+    const handleAddOnChange = (index, e) => {
+        const currentAddOns = [...addOns];
+
+        if(e.target.name == 'name') {
+            currentAddOns[index][e.target.name] = e.target.value
+        }else{
+            currentAddOns[index][e.target.name] = e.target.value
+        }
+        setAddOns(currentAddOns);
+    }
+
+    const onCreateAddOn = () => {
+        const newAddOn = {name:'', price:''};
+        setAddOns((prevAddOns) => [...prevAddOns, newAddOn]);
     }
 
     return (
@@ -61,6 +81,19 @@ const AddCollection = () => {
                             Add products
                         </div>
                     </div>
+
+                    <div className="flex flex-col gap-5 shadow-md p-5 bg-white rounded-md">
+                        <p className='font-medium text-accent-default'>Add-Ons</p>
+
+                        <div className="flex flex-col gap-2">
+                            {addOns &&
+                                addOns.map((addOn, index) => {
+                                    return <AddOn key={index} addOn={addOn} index={index} handleAddOnChange={handleAddOnChange} />
+                                })
+                            }
+                        </div>
+                            <button onClick={onCreateAddOn} className='w-fit py-1 px-2 bg-accent-default text-white rounded-md'>Create Add-On</button>
+                    </div>
                 </div>
 
                 <div className="flex flex-col gap-5 flex-1">
@@ -79,5 +112,7 @@ const AddCollection = () => {
         </div>
     )
 }
+
+
 
 export default AddCollection

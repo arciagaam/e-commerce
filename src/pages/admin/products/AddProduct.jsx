@@ -57,7 +57,7 @@ const AddProduct = () => {
                 const imageRes = await Promise.all(imagePromises);
 
                 // SET URLS
-                const imageDetailsRef = doc(db, 'products', `${newProduct.id}`);
+                const imageDetailsRef = doc(db, 'products', newProduct.id);
                 await updateDoc(imageDetailsRef, {
                     images: imageRes
                 });

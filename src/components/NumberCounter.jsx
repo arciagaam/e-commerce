@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 
 const NumberCounter = ({label=null}) => {
   
-    const [count, setCount] = useState(0)
+    const [count, setCount] = useState(label == null ? 1 : 0);
 
     return (
     <div className={`flex ${label != null ? 'gap-2' : 'self-start'} items-center justify-between`}>
