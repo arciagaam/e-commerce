@@ -19,6 +19,11 @@ const ProductQuickView = ({productName, productPrice, isActive, setIsActive, ind
     const navigate = useNavigate();
 
     const [cart, setCart] = useState([]);
+    const [itemCount, setItemCount] = useState(0);
+
+    const callbackCount = (count) => {
+        setItemCount(count);
+    }
 
     useEffect(() => {
 
@@ -41,7 +46,7 @@ const ProductQuickView = ({productName, productPrice, isActive, setIsActive, ind
         if(localStorage.getItem('user')){
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
-            await addDoc(cartRef, {product_id:product.id})
+            await addDoc(cartRef, {product_id:product.id, quantity: itemCount})
             .then(() => {console.log('success')})
             .catch(() => {console.log('error')});
 
@@ -77,7 +82,9 @@ const ProductQuickView = ({productName, productPrice, isActive, setIsActive, ind
                             </ul>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <NumberCounter />
+                            <NumberCounter 
+                                setCounter={callbackCount}
+                            />
                             <button onClick={handleAddToCart} className="text-sm p-2 bg-[#EFE3D9]">Add to Cart</button>
                         </div>
 

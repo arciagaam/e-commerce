@@ -1,8 +1,12 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
-const NumberCounter = ({label=null}) => {
+const NumberCounter = ({label=null, setCounter}) => {
   
     const [count, setCount] = useState(label == null ? 1 : 0);
+
+    useEffect(() => {
+        setCounter(count);
+    }, [count])
 
     return (
     <div className={`flex ${label != null ? 'gap-2' : 'self-start'} items-center justify-between`}>

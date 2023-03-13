@@ -42,7 +42,7 @@ const Cart = () => {
             if (productDoc.exists()) {
               temp = productDoc.data();
               temp['cartId'] = cart.id;
-              // console.log(temp);
+              temp['quantity'] = cart.quantity;
               return (temp);
             }
           });
@@ -84,6 +84,7 @@ const Cart = () => {
 
           {cartItems &&
             cartItems.map(cartItem => {
+              console.log(cartItem);
               return <CartItem 
               key={cartItem.cartId}
               setDeletedItem={callbackDelete}

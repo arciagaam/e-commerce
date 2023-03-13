@@ -35,8 +35,8 @@ const CartItem = ({cartItem, setDeletedItem}) => {
 
             <div className="flex flex-col h-full justify-between">
                 <div className="flex flex-row gap-20">
-                    <p>Quantity</p>
-                    <p>Total</p>
+                    <p>Quantity: {cartItem.quantity}</p>
+                    <p>Total: {cartItem.quantity * cartItem.pricing}</p>
                 </div>
 
                 <div className="flex flex-row gap-2">
