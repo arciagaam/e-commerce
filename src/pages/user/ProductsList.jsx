@@ -57,11 +57,11 @@ const ProductsList = () => {
 
     useEffect(() => {
         if (selectedFilter.id == 'LtoH') {
-            setProductList((prevProductList) => productList.sort((a,b) => b.pricing - a.pricing));
+            setProductList((prevProductList) => prevProductList.sort((a,b) => b.pricing - a.pricing));
         }
 
         if (selectedFilter.id == 'HtoL') {
-            setProductList((prevProductList) => productList.sort((a,b) => a.pricing - b.pricing));
+            setProductList((prevProductList) => prevProductList.sort((a,b) => a.pricing - b.pricing));
         }
     }, [selectedFilter])
 
