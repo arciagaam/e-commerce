@@ -99,9 +99,12 @@ const Collections = () => {
             {collections.map((collection, index) => {
               return <TableRow
                 key={index}
-                collection={collection}
+                table={'collections'}
+                id={collection.id}
+                name={collection.title}
+                description={collection.description}
                 handleRowSelect={handleRowSelect}
-                handleDeleteCollection={deleteCollection}
+                handleDeleteItem={deleteCollection}
 
               />
             })}

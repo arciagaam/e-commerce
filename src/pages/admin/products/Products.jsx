@@ -11,10 +11,16 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
+import TableRow from '../../../components/TableRow';
 
 const Products = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([])
+  const [deleteProductId, setDeleteProductId] = useState('');
+
+  const deleteProduct = (id) => {
+    setDeleteProductId(id);
+  }
 
   useEffect(() => {
 
@@ -36,6 +42,39 @@ const Products = () => {
 
   }, [])
 
+  const handleRowSelect = (id) => {
+    navigate(`${id}`);
+  }
+
+  useEffect(() => {
+
+    const deleteProductItem = async () => {
+      if (deleteProductId) {
+        const docRef = doc(db, 'products', deleteProductId);
+
+        // const collectionRef = collection(db, 'users');
+        // const cSnap = await getDocs(collectionRef);
+
+        // cSnap.forEach((c) => {
+        //   const userDocRef = collection(db, 'users', c.id);
+        //   const cartRef = doc(userDocRef, 'cart');
+
+        //   console.log(cartRef);
+        // })
+
+        
+
+        await deleteDoc(docRef).then( async () => {
+          
+          console.log('Deleted product successfully!');
+        })
+      }
+    }
+
+    deleteProductItem();
+
+  }, [deleteProductId]);
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
@@ -56,30 +95,29 @@ const Products = () => {
               <th>Status</th>
               <th>Inventory</th>
               <th>Type</th>
+              <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {products.map((product, index) => {
-              return <TableRow key={index} product={product} navigate={navigate} />
+              return <TableRow 
+              key={index} 
+              table={'products'}
+              id={product.id}
+              name={product.name}
+              status={product.status}
+              inventory={product.inventory}
+              type={product.type} 
+              handleRowSelect={handleRowSelect}
+              handleDeleteItem={deleteProduct} 
+
+              />
             })}
           </tbody>
         </table>
       </div>
-
-
     </div>
-  )
-}
-
-const TableRow = ({ product, navigate }) => {
-  return (
-    <tr className='border-b cursor-pointer hover:bg-accent-light transition-bg duration-200' onClick={() => { navigate(`${product.id}`) }}>
-      <td className='p-1'>{product.name}</td>
-      <td>{product.status}</td>
-      <td>{product.inventory}</td>
-      <td>{product.type}</td>
-    </tr>
   )
 }
 
