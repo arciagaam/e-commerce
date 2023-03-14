@@ -43,7 +43,6 @@ const ProductsList = () => {
             const data = []
 
             docSnap.forEach((snap) => {
-                console.log(snap.data().collection);
                 console.log(selectedCollection.id);
                 data.push({ ...snap.data(), id: snap.id })
             })
