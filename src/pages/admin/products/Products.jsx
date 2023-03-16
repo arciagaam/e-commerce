@@ -52,21 +52,27 @@ const Products = () => {
       if (deleteProductId) {
         const docRef = doc(db, 'products', deleteProductId);
 
-        // const collectionRef = collection(db, 'users');
-        // const cSnap = await getDocs(collectionRef);
+        await deleteDoc(docRef).then(async () => {
 
-        // cSnap.forEach((c) => {
-        //   const userDocRef = collection(db, 'users', c.id);
-        //   const cartRef = doc(userDocRef, 'cart');
-
-        //   console.log(cartRef);
-        // })
-
-        
-
-        await deleteDoc(docRef).then( async () => {
-          
           console.log('Deleted product successfully!');
+
+          const collectionRef = collection(db, 'users');
+          const cSnap = await getDocs(collectionRef);
+
+          cSnap.forEach(async (c) => {
+            const cartRef = collection(db, `users/${c.id}/cart`);
+            const cartSnap = await getDocs(cartRef);
+
+            cartSnap.forEach(async (cart) => {
+              if (cart.data().product_id == deleteProductId) {
+                const cartDocRef = doc(db, `users/${c.id}/cart`, cart.id);
+                await deleteDoc(cartDocRef).then(() => {
+                  console.log('Specific product deleted from carts');
+                })
+              }
+            });
+          });
+
         })
       }
     }
@@ -101,16 +107,16 @@ const Products = () => {
 
           <tbody>
             {products.map((product, index) => {
-              return <TableRow 
-              key={index} 
-              table={'products'}
-              id={product.id}
-              name={product.name}
-              status={product.status}
-              inventory={product.inventory}
-              type={product.type} 
-              handleRowSelect={handleRowSelect}
-              handleDeleteItem={deleteProduct} 
+              return <TableRow
+                key={index}
+                table={'products'}
+                id={product.id}
+                name={product.name}
+                status={product.status}
+                inventory={product.inventory}
+                type={product.type}
+                handleRowSelect={handleRowSelect}
+                handleDeleteItem={deleteProduct}
 
               />
             })}
