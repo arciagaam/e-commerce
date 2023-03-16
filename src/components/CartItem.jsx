@@ -1,11 +1,21 @@
 import React from 'react'
+import { useState, useEffect } from 'react';
 
-const CartItem = ({cartItem, setDeletedItem}) => {
-
+const CartItem = ({cartItem, setDeletedItem, setTotal}) => {
+    
+    const [totalPrice, setTotalPrice] = useState(0);
     const handleRemove = (cartId) => {
         
         setDeletedItem(cartId);
     }
+
+    const totalPerItem = cartItem.quantity * cartItem.pricing;
+    // setTotal(totalPerItem);
+
+    useEffect(() => {
+        setTotalPrice(totalPerItem);
+        setTotal(totalPrice);
+    }, [totalPrice]);
 
     return (
 
@@ -36,7 +46,7 @@ const CartItem = ({cartItem, setDeletedItem}) => {
             <div className="flex flex-col h-full justify-between">
                 <div className="flex flex-row gap-20">
                     <p>Quantity: {cartItem.quantity}</p>
-                    <p>Total: {cartItem.quantity * cartItem.pricing}</p>
+                    <p>Total: {totalPerItem}</p>
                 </div>
 
                 <div className="flex flex-row gap-2">

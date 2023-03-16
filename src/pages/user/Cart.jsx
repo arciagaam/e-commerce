@@ -14,10 +14,18 @@ const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [deletedItem, setDeletedItem] = useState('');
+  const [totalPrice, setTotalPrice] = useState(0);
 
   const callbackDelete = (deletedItem) => {
     setDeletedItem(deletedItem);
   }
+
+  const callbackTotal = (totalPrice) => {
+    setTotalPrice((prevTotal) => prevTotal + totalPrice);
+  }
+
+  useEffect(() => {
+  },[totalPrice])
 
   useEffect(() => {
     if (localStorage.getItem('user')) {
@@ -88,6 +96,7 @@ const Cart = () => {
               return <CartItem 
               key={cartItem.cartId}
               setDeletedItem={callbackDelete}
+              setTotal={callbackTotal}
               cartItem={cartItem} />
             })
           }
@@ -98,7 +107,7 @@ const Cart = () => {
 
           <div className="flex flex-row gap-2">
             <p>Estimated Total</p>
-            <p>Php 1,232.00</p>
+            <p>Php {totalPrice}</p>
           </div>
 
           <button>Checkout</button>
