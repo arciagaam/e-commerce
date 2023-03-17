@@ -10,7 +10,6 @@ const CartItem = ({cartItem, setDeletedItem, setTotal}) => {
     }
 
     const totalPerItem = cartItem.quantity * cartItem.pricing;
-    // setTotal(totalPerItem);
 
     useEffect(() => {
         setTotalPrice(totalPerItem);

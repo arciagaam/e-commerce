@@ -15,6 +15,41 @@ const Product = () => {
     const [product, setProduct] = useState({});
     const [dataCollection, setDataCollection] = useState({})
     const [isLoading, setIsLoading] = useState(true);
+    const [itemCount, setItemCount] = useState(0);
+    // const [addOnQty, setAddOnQty] = useState(0);
+    // const [addOnName, setAddOnName] = useState('');
+    const [addOnDetails, setAddOnDetails] = useState({});
+    const [addOnsArray, setAddOnsArray] = useState([]);
+
+
+    const callbackCount = (count) => {
+        setItemCount(count);
+    }
+
+    // const callbackAddOnQty = (count) => {
+    //     setAddOnQty(count);
+    // }
+
+    // const callbackAddOnName = (name) => {
+    //     setAddOnName(name);
+    // }
+
+    const callbackAddOnDetails = (details) => {
+        if(Object.keys(details).length) {
+            setAddOnDetails(details);
+        }  
+    }
+
+    useEffect(() => {
+        // if(addOnsArray.length) {
+            setAddOnsArray((prevArray) => prevArray.concat(addOnDetails));
+        // }
+
+    },[addOnDetails]);
+
+    useEffect(() => {
+        console.log(addOnsArray);
+    },[addOnsArray])
 
     const submit = (event) => {
         alert('pasok')
@@ -67,7 +102,7 @@ const Product = () => {
                                 <p className='text-m'>Dried Flower Bouqet</p>
                                 <p className='text-m'>Fairy Lights</p>
                                 <p className='text-m'>14" Box</p>
-                                <NumberCounter />
+                                <NumberCounter setCounter={callbackCount}/>
                             </div>
 
                             <div className="flex flex-col">
@@ -75,7 +110,7 @@ const Product = () => {
 
                                 <div className="grid grid-cols-2 gap-5">
                                     {dataCollection &&
-                                        dataCollection.addons.map((addon, index) => <NumberCounter key={index} label={addon.name} />)}
+                                        dataCollection.addons.map((addon, index) => <NumberCounter key={index} label={addon.name} price={addon.price} setAddOnDetails={callbackAddOnDetails} />)}
 
                                 </div>
                             </div>

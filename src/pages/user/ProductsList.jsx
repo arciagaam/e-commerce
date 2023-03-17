@@ -135,7 +135,7 @@ const ProductsList = () => {
             <div className="relative grid grid-rows-2 grid-cols-5 w-full">
                 {
                     productList.map((product, index) => {
-                    console.log(product.pricing)
+                    console.log(product.name)
                     return <ProductCard
                         key={index}
                         index={index}
