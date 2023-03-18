@@ -51,6 +51,7 @@ const Cart = () => {
               temp = productDoc.data();
               temp['cartId'] = cart.id;
               temp['quantity'] = cart.quantity;
+              temp['addOns'] = cart.add_ons;
               return (temp);
             }
           });
