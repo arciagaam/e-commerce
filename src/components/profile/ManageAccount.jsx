@@ -1,12 +1,50 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
+import { db } from '../../firebase';
+import { 
+    collection,
+    getDocs,
+    getDoc,
+    updateDoc,
+    doc,
+} from "firebase/firestore";
 
 const ManageAccount = () => {
+
+    const { uid }  = JSON.parse(localStorage.getItem('user'));
+
+    const [name, setName] = useState();
+    const [email, setEmail] = useState();
+    const [number, setNumber] = useState();
+    const [birthday, setBirthday] = useState();
+    const [gender, setGender] = useState();
+
+    useEffect(() => {
+        const fetch = async () => {
+            const docRef = doc(db, 'users', uid);
+            const docSnap = await getDoc(docRef);
+            if (docSnap.exists()) {
+                setName(docSnap.data().name);
+                setEmail(docSnap.data().email);
+                setNumber(docSnap.data().number);
+                setBirthday(docSnap.data().birthday);
+                setGender(docSnap.data().gender);
+            } else {
+                console.log ('User not found.');
+            }
+        }
+        fetch();
+    }, []);
+
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-row columns-2 gap-3 h-60">
                 <div className="flex flex-col w-1/3 pl-3 pt-3 gap-3 bg-zinc-200 shadow-md">
                     <p className='text-lg'>Personal Profile</p>
-                    <p className='text-sm'>Name mong napakahaba</p>
+                    <p className='text-sm'>Name: {name}</p>
+                    <p className='text-sm'>Email: {email}</p>
+                    <p className='text-sm'>Mobile Number: {number}</p>
+                    <p className='text-sm'>Birthday: {birthday}</p>
+                    <p className='text-sm'>Gender: {gender}</p>
                 </div>
                 <div className="flex flex-col w-2/3 gap-3 bg-zinc-200 shadow-md">
                     <p className='text-lg pl-3 pt-3'>Address Book</p>
