@@ -15,7 +15,7 @@ const MyProfile = () => {
     const { uid }  = JSON.parse(localStorage.getItem('user'));
 
     const [isInput, setIsInput] = useState(false);
-    const [show, setShow] = useState(true);
+    const [show, setShow] = useState(false);
 
     const [name, setName] = useState();
     const [email, setEmail] = useState();
@@ -50,16 +50,16 @@ const MyProfile = () => {
             await updateDoc(docRef, {
                 name: name,
                 email: email,
-                number: number,
+                mobile: number,
                 birthday: birthday,
                 gender: gender,
             });
-            console.log('nasave');
+            console.log('Product saved');
         } catch (err) {
-            console.error('di gumana', err);
+            console.error('Product not saved', err);
         } 
         setIsInput(false);
-        setShow(true);
+        setShow(false);
     }
 
     // Accepts number only and limits to 11 digits
@@ -68,9 +68,9 @@ const MyProfile = () => {
         setNumber(validate);
     }
 
-    function edit() {
+    const edit = () => {
         setIsInput(true);
-        setShow(false);
+        setShow(true);
     }
 
 
@@ -106,9 +106,10 @@ const MyProfile = () => {
                 
             </div>
             <div className="flex flex-col gap-3">
-                <div className="flex flex-end">
+                <div className="flex flex-end gap-3">
                     <button className='text-lg p-3 w-56 bg-accent-default mr-auto' onClick={() => edit()}>Edit Profile</button>
-                    <button className='text-lg p-3 w-56 bg-accent-default' hidden={show} onClick={submit} type='submit'>Save</button>
+                    <button className='text-base p-3 w-20 bg-accent-default' hidden={!show} onClick={submit} type='submit'>Save</button>
+                    {/* <button className='text-base p-3 w-20 bg-accent-default' hidden={show} onClick={edit} type='submit'>Cancel</button> */}
                 </div>
                 <button className='text-lg p-3 w-56 bg-accent-default'>Set Password</button>
             </div>

@@ -40,7 +40,11 @@ const ManageAccount = () => {
             <div className="flex flex-row columns-2 gap-3 h-60">
                 <div className="flex flex-col w-1/3 pl-3 pt-3 gap-3 bg-zinc-200 shadow-md">
                     <p className='text-lg'>Personal Profile</p>
-                    <p className='text-sm'>Name mong napakahaba</p>
+                    <p className='text-sm'>Name: {name}</p>
+                    <p className='text-sm'>Email: {email}</p>
+                    <p className='text-sm'>Mobile Number: {number}</p>
+                    <p className='text-sm'>Birthday: {birthday}</p>
+                    <p className='text-sm'>Gender: {gender}</p>
                 </div>
                 <div className="flex flex-col w-2/3 gap-3 bg-zinc-200 shadow-md">
                     <p className='text-lg pl-3 pt-3'>Address Book</p>
