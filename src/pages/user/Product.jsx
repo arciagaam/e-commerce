@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import NumberCounter from '../../components/NumberCounter';
 import Rating from '../../components/Rating';
-import { db, storage } from '../../firebase';
+import { db, storage, auth } from '../../firebase';
 import {
     collection,
     getDocs,
     getDoc,
+    addDoc,
     doc
 } from 'firebase/firestore';
 import { useParams } from 'react-router-dom';
@@ -16,44 +17,68 @@ const Product = () => {
     const [dataCollection, setDataCollection] = useState({})
     const [isLoading, setIsLoading] = useState(true);
     const [itemCount, setItemCount] = useState(0);
-    // const [addOnQty, setAddOnQty] = useState(0);
-    // const [addOnName, setAddOnName] = useState('');
     const [addOnDetails, setAddOnDetails] = useState({});
     const [addOnsArray, setAddOnsArray] = useState([]);
+    const [finalAddOns, setFinalAddOns] = useState([]);
 
 
     const callbackCount = (count) => {
         setItemCount(count);
     }
 
-    // const callbackAddOnQty = (count) => {
-    //     setAddOnQty(count);
-    // }
-
-    // const callbackAddOnName = (name) => {
-    //     setAddOnName(name);
-    // }
-
     const callbackAddOnDetails = (details) => {
-        if(Object.keys(details).length) {
+        if (Object.keys(details).length) {
             setAddOnDetails(details);
-        }  
+        }
     }
 
     useEffect(() => {
-        // if(addOnsArray.length) {
-            setAddOnsArray((prevArray) => prevArray.concat(addOnDetails));
-        // }
-
-    },[addOnDetails]);
+        setAddOnsArray((prevArray) => prevArray.concat(addOnDetails));
+        // setAddOnsArray(() => {
+        //     let temp = addOnsArray.filter((addOn) => (Object.keys(addOn).length !== 0 && addOn.quantity !== 0));
+        //     if (temp.filter((addOn) => addOn.name == addOnDetails.name)) {
+        //         temp = temp.filter((addOn) => addOn.name != addOnDetails.name);
+        //         temp.concat(addOnDetails);
+        //         return temp;
+        //     } else {
+        //         return temp.concat(addOnDetails);
+        //     }
+        // })
+    }, [addOnDetails]);
 
     useEffect(() => {
-        console.log(addOnsArray);
-    },[addOnsArray])
+        setFinalAddOns(() => {
+            let temp = addOnsArray.sort((a, b) => {
+                if (a.name < b.name) {
+                  return -1;
+                } else if (a.name > b.name) {
+                  return 1;
+                } else {
+                  return 0;
+                }
+              });
 
-    const submit = (event) => {
-        alert('pasok')
-    }
+            let prevName = '';
+            let result = temp.filter((addOn, index, arr) => {
+                if (addOn.name === prevName) {
+                    arr.splice(index - 1, 1);
+                } else {
+                    prevName = addOn.name;
+                }
+                return addOn;
+            });
+
+            result = result.filter((addOn) => (Object.keys(addOn).length !== 0 && addOn.quantity !== 0));
+
+            return result;
+        })
+        // console.log(addOnsArray);
+    }, [addOnsArray])
+
+    useEffect(() => {
+        console.log(finalAddOns);
+        console.log(params.id);
+    }, [finalAddOns])
 
     useEffect(() => {
 
@@ -62,7 +87,7 @@ const Product = () => {
             const snapData = await getDoc(docRef);
             setProduct(snapData.data());
 
-            if(snapData.data()){
+            if (snapData.data()) {
                 const collectionsRef = doc(db, 'collections', snapData.data().collection);
                 const collectionData = await getDoc(collectionsRef);
                 setDataCollection(collectionData.data())
@@ -72,6 +97,22 @@ const Product = () => {
         getProduct();
 
     }, []);
+
+    const handleAddToCart = async () => {
+        if(localStorage.getItem('user')){
+            const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
+
+            await addDoc(cartRef, {product_id:params.id, quantity: itemCount, add_ons: finalAddOns})
+            .then(() => {console.log('success')})
+            .catch(() => {console.log('error')});
+
+            location.reload();
+        }else {
+            navigate('/login')
+        }
+
+    }
+
     return (
 
         isLoading ? <div>Loading</div> :
@@ -102,7 +143,7 @@ const Product = () => {
                                 <p className='text-m'>Dried Flower Bouqet</p>
                                 <p className='text-m'>Fairy Lights</p>
                                 <p className='text-m'>14" Box</p>
-                                <NumberCounter setCounter={callbackCount}/>
+                                <NumberCounter setCounter={callbackCount} />
                             </div>
 
                             <div className="flex flex-col">
@@ -115,7 +156,7 @@ const Product = () => {
                                 </div>
                             </div>
                             <div className="flex justify-center mt-10">
-                                <button className="bg-[#EFE3D9] px-6 py-3" onClick={submit}>Add to cart</button>
+                                <button className="bg-[#EFE3D9] px-6 py-3" onClick={handleAddToCart}>Add to cart</button>
                             </div>
                         </div>
                     </div>
