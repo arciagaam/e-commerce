@@ -9,6 +9,12 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal }) => {
         setDeletedItem(cartId);
     }
 
+    let totalAddOns = 0;
+
+    cartItem.addOns.forEach(addOn => {
+        totalAddOns += addOn.quantity * addOn.price;
+    })
+
     const totalPerItem = cartItem.quantity * cartItem.pricing;
 
     useEffect(() => {
