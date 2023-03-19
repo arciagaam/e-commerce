@@ -4,21 +4,38 @@ import { useState, useEffect } from 'react';
 const CartItem = ({ cartItem, setDeletedItem, setTotal }) => {
 
     const [totalPrice, setTotalPrice] = useState(0);
+    const [totalAddOns, setTotalAddOns] = useState(0);
     const handleRemove = (cartId) => {
 
         setDeletedItem(cartId);
     }
 
-    let totalAddOns = 0;
+    useEffect(() => {
+        let temp = 0;
 
-    cartItem.addOns.forEach(addOn => {
-        totalAddOns += addOn.quantity * addOn.price;
-    })
-
-    const totalPerItem = cartItem.quantity * cartItem.pricing;
+        cartItem.addOns.forEach(addOn => {
+            temp += addOn.quantity * addOn.price;
+        })
+        setTotalAddOns(temp);
+        // console.log(temp);
+    }, [])
 
     useEffect(() => {
+
+        console.log(cartItem);
+    }, [totalAddOns])
+
+    useEffect(() => {
+        const totalPerItem = cartItem.quantity * (parseInt(cartItem.pricing) + totalAddOns);
         setTotalPrice(totalPerItem);
+        console.log(totalPerItem);
+    },[totalAddOns]);
+
+    // // useEffect(() => {
+    // //     console.log(totalAddOns);
+    // // }, [totalAddOns])
+
+    useEffect(() => {
         setTotal(totalPrice);
     }, [totalPrice]);
 
@@ -60,7 +77,7 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal }) => {
             <div className="flex flex-col h-full justify-between">
                 <div className="flex flex-row gap-20">
                     <p>Quantity: {cartItem.quantity}</p>
-                    <p>Total: {totalPerItem}</p>
+                    <p>Total: {totalPrice}</p>
                 </div>
 
                 <div className="flex flex-row gap-2">
