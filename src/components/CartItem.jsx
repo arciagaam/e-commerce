@@ -1,16 +1,21 @@
 import React from 'react'
 import { useState, useEffect } from 'react';
 
-const CartItem = ({cartItem, setDeletedItem, setTotal}) => {
-    
+const CartItem = ({ cartItem, setDeletedItem, setTotal }) => {
+
     const [totalPrice, setTotalPrice] = useState(0);
     const handleRemove = (cartId) => {
-        
+
         setDeletedItem(cartId);
     }
 
+    let totalAddOns = 0;
+
+    cartItem.addOns.forEach(addOn => {
+        totalAddOns += addOn.quantity * addOn.price;
+    })
+
     const totalPerItem = cartItem.quantity * cartItem.pricing;
-    // setTotal(totalPerItem);
 
     useEffect(() => {
         setTotalPrice(totalPerItem);
@@ -34,8 +39,17 @@ const CartItem = ({cartItem, setDeletedItem, setTotal}) => {
                         <div className="flex flex-col">
                             <div className="flex flex-row gap-10">
                                 <p>{cartItem.name}</p>
-                                <p>Php {cartItem.costPerItem}</p>
+                                <p>Php {cartItem.pricing}</p>
                             </div>
+                                {cartItem.addOns && 
+                                    cartItem.addOns.map(addOn => {
+                                        return <div className="flex flex-row gap-5">
+                                            <p>{addOn.name}</p>
+                                            <p>{addOn.quantity}</p>
+                                            <p>{addOn.price}</p>
+                                        </div>
+
+                                    })}
 
                         </div>
                     </div>
