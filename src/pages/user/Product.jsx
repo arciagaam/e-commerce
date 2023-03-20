@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import NumberCounter from '../../components/NumberCounter';
 import Rating from '../../components/Rating';
 import { db, storage, auth } from '../../firebase';
@@ -17,68 +17,45 @@ const Product = () => {
     const [dataCollection, setDataCollection] = useState({})
     const [isLoading, setIsLoading] = useState(true);
     const [itemCount, setItemCount] = useState(0);
-    const [addOnDetails, setAddOnDetails] = useState({});
-    const [addOnsArray, setAddOnsArray] = useState([]);
-    const [finalAddOns, setFinalAddOns] = useState([]);
+    const cartDetails = useRef({});
 
+    // const callbackAddOnDetails = (details) => {
+    //     if (Object.keys(details).length) {
+    //         setAddOnDetails(details);
+    //     }
+    // }
 
-    const callbackCount = (count) => {
-        setItemCount(count);
-    }
+    // useEffect(() => {
+    //     setAddOnsArray((prevArray) => prevArray.concat(addOnDetails));
+    // }, [addOnDetails]);
 
-    const callbackAddOnDetails = (details) => {
-        if (Object.keys(details).length) {
-            setAddOnDetails(details);
-        }
-    }
+    // useEffect(() => {
+    //     setFinalAddOns(() => {
+    //         let temp = addOnsArray.sort((a, b) => {
+    //             if (a.name < b.name) {
+    //               return -1;
+    //             } else if (a.name > b.name) {
+    //               return 1;
+    //             } else {
+    //               return 0;
+    //             }
+    //           });
 
-    useEffect(() => {
-        setAddOnsArray((prevArray) => prevArray.concat(addOnDetails));
-        // setAddOnsArray(() => {
-        //     let temp = addOnsArray.filter((addOn) => (Object.keys(addOn).length !== 0 && addOn.quantity !== 0));
-        //     if (temp.filter((addOn) => addOn.name == addOnDetails.name)) {
-        //         temp = temp.filter((addOn) => addOn.name != addOnDetails.name);
-        //         temp.concat(addOnDetails);
-        //         return temp;
-        //     } else {
-        //         return temp.concat(addOnDetails);
-        //     }
-        // })
-    }, [addOnDetails]);
+    //         let prevName = '';
+    //         let result = temp.filter((addOn, index, arr) => {
+    //             if (addOn.name === prevName) {
+    //                 arr.splice(index - 1, 1);
+    //             } else {
+    //                 prevName = addOn.name;
+    //             }
+    //             return addOn;
+    //         });
 
-    useEffect(() => {
-        setFinalAddOns(() => {
-            let temp = addOnsArray.sort((a, b) => {
-                if (a.name < b.name) {
-                  return -1;
-                } else if (a.name > b.name) {
-                  return 1;
-                } else {
-                  return 0;
-                }
-              });
+    //         result = result.filter((addOn) => (Object.keys(addOn).length !== 0 && addOn.quantity !== 0));
 
-            let prevName = '';
-            let result = temp.filter((addOn, index, arr) => {
-                if (addOn.name === prevName) {
-                    arr.splice(index - 1, 1);
-                } else {
-                    prevName = addOn.name;
-                }
-                return addOn;
-            });
-
-            result = result.filter((addOn) => (Object.keys(addOn).length !== 0 && addOn.quantity !== 0));
-
-            return result;
-        })
-        // console.log(addOnsArray);
-    }, [addOnsArray])
-
-    useEffect(() => {
-        console.log(finalAddOns);
-        console.log(params.id);
-    }, [finalAddOns])
+    //         return result;
+    //     })
+    // }, [addOnsArray])
 
     useEffect(() => {
 
@@ -90,19 +67,42 @@ const Product = () => {
             if (snapData.data()) {
                 const collectionsRef = doc(db, 'collections', snapData.data().collection);
                 const collectionData = await getDoc(collectionsRef);
+                const temp = [];
                 setDataCollection(collectionData.data())
                 setIsLoading(false);
+
+                collectionData.data().addons.forEach(addOn => {temp.push({...addOn, quantity: 0})})
+                cartDetails.current['add_ons'] = temp;
             }
         }
         getProduct();
 
     }, []);
 
+    
+    const callbackCount = ({type, name, count}) => {
+        if (!cartDetails.current.add_ons) return false;
+
+        if (type == 'addOns') {
+            cartDetails?.current.add_ons.forEach(addOn => {
+                if (name == addOn.name) {
+                    addOn.quantity = count;
+                }
+            })
+        } else if (type == 'product') {
+            cartDetails.current.quantity = count;
+            cartDetails.current.product_id = params.id;
+        }
+        
+    }
+
     const handleAddToCart = async () => {
+
+        console.log(cartDetails);
         if(localStorage.getItem('user')){
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
-            await addDoc(cartRef, {product_id:params.id, quantity: itemCount, add_ons: finalAddOns})
+            await addDoc(cartRef, cartDetails.current)
             .then(() => {console.log('success')})
             .catch(() => {console.log('error')});
 
@@ -143,7 +143,7 @@ const Product = () => {
                                 <p className='text-m'>Dried Flower Bouqet</p>
                                 <p className='text-m'>Fairy Lights</p>
                                 <p className='text-m'>14" Box</p>
-                                <NumberCounter setCounter={callbackCount} />
+                                <NumberCounter setCounter={callbackCount} type={'product'} />
                             </div>
 
                             <div className="flex flex-col">
@@ -151,7 +151,7 @@ const Product = () => {
 
                                 <div className="grid grid-cols-2 gap-5">
                                     {dataCollection &&
-                                        dataCollection.addons.map((addon, index) => <NumberCounter key={index} label={addon.name} price={addon.price} setAddOnDetails={callbackAddOnDetails} />)}
+                                        dataCollection.addons.map((addon, index) => <NumberCounter key={index} label={addon.name} type={'addOns'} price={addon.price} setCounter={callbackCount} />)}
 
                                 </div>
                             </div>
