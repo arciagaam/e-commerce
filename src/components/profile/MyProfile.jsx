@@ -31,9 +31,9 @@ const MyProfile = () => {
             const docRef = doc(db, 'users', uid);
             const docSnap = await getDoc(docRef);
             if (docSnap.exists()) {
-                setName(docSnap.data().name);
+                setName(docSnap.data().full_name);
                 setEmail(docSnap.data().email);
-                setNumber(docSnap.data().number);
+                setNumber(docSnap.data().mobile);
                 setBirthday(docSnap.data().birthday);
                 setGender(docSnap.data().gender);
             } else {
@@ -48,7 +48,7 @@ const MyProfile = () => {
         try {
             const docRef = doc(db, 'users', uid);
             await updateDoc(docRef, {
-                name: name,
+                full_name: name,
                 email: email,
                 mobile: number,
                 birthday: birthday,
