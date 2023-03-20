@@ -18,11 +18,11 @@ const ManageAccount = () => {
 
     const [addresses, setAddresses] = useState([]);
     const [name, setName] = useState();
-    const [address, setAddress] = useState([]);
-    const [postal, setPostal] = useState([]);
-    const [number, setNumber] = useState([]);
+    const [address, setAddress] = useState();
+    const [postal, setPostal] = useState();
+    const [number, setNumber] = useState();
 
-    // store data in an array
+    // store data in an array of object
     const submit = async () => {
         try {
             const docRef = doc(db, 'users', uid);
@@ -42,21 +42,21 @@ const ManageAccount = () => {
         setShow(false);
     }
 
-    // useEffect(() => {
-    //     const fetch = async () => {
-    //         const docRef = doc(db, 'users', uid);
-    //         const docSnap = await getDoc(docRef);
-    //         if (docSnap.exists()) {
-    //             setAddresses(docSnap.data().map(address))
-    //             console.log(setAddresses);
-    //         }
-    //     }
-    //     fetch()
-    // }, []);
-
-    const docRef = doc(db, 'users', uid);
-    const docSnap = getDoc(docRef);
-    docSnap.forEach()
+    useEffect(() => {
+        const getAddress = async () => {
+            const docRef = doc(db, 'users', uid);
+            const docSnap = await getDoc(docRef);
+        
+            docSnap.data().addresses.forEach((list) => {
+                setName(list.name);
+                setAddress(list.address);
+                setPostal(list.code);
+                setNumber(list.mobile);              
+            });
+        }
+        getAddress();
+    }, []);
+    
 
 
 
@@ -74,10 +74,13 @@ const ManageAccount = () => {
                 </thead>
                 <tbody>
                     <tr className='text-sm border-b-cyan-600'>
-                        <td className='p-5'>Name mong napakahaba</td>
+                    {addresses.forEach((count) => {
+                        <tr>pasok</tr>
+                    })}
+                        <td className='p-5'>{name}</td>
                         <td className='p-5'>{address}</td>
-                        <td className='p-5'>Manila - Sampaloc - Brgy. 1234</td>
-                        <td className='p-5'>+(63) 912 345 6789</td>
+                        <td className='p-5'>{postal}</td>
+                        <td className='p-5'>{number}</td>
                         <td className='p-5'><button className='text-cyan-600'>Edit</button></td>
                     </tr>
                 </tbody>
