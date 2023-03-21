@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
+import { useNavigate } from 'react-router-dom'
 import { 
     collection,
     getDocs,
@@ -12,49 +13,59 @@ import {
 
 const MyProfile = () => {
 
-    const { uid }  = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
 
     const [isInput, setIsInput] = useState(false);
     const [show, setShow] = useState(false);
 
-    const [name, setName] = useState();
-    const [email, setEmail] = useState();
-    const [number, setNumber] = useState();
-    const [birthday, setBirthday] = useState();
-    const [gender, setGender] = useState();
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [number, setNumber] = useState('');
+    const [birthday, setBirthday] = useState('');
+    const [gender, setGender] = useState('');
 
     
     
     // Get data of logged in user
     useEffect(() => {
-        const fetch = async () => {
-            const docRef = doc(db, 'users', uid);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                setName(docSnap.data().full_name);
-                setEmail(docSnap.data().email);
-                setNumber(docSnap.data().mobile);
-                setBirthday(docSnap.data().birthday);
-                setGender(docSnap.data().gender);
-            } else {
-                console.log ('User not found.');
+        if (localStorage.getItem('user')) {
+            const { uid }  = JSON.parse(localStorage.getItem('user'));
+            const fetch = async () => {
+                const docRef = doc(db, 'users', uid);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    setName(docSnap.data().full_name);
+                    setEmail(docSnap.data().email);
+                    setNumber(docSnap.data().mobile);
+                    setBirthday(docSnap.data().birthday);
+                    setGender(docSnap.data().gender);
+                } else {
+                    console.log ('User not found.');
+                }
             }
+            fetch();
+        } else {
+            navigate('/');
         }
-        fetch();
     }, []);
 
     // Store data to firestore
     const submit = async () => {
         try {
-            const docRef = doc(db, 'users', uid);
-            await updateDoc(docRef, {
-                full_name: name,
-                email: email,
-                mobile: number,
-                birthday: birthday,
-                gender: gender,
-            });
-            console.log('Product saved');
+            if (localStorage.getItem('user')) {
+                const { uid }  = JSON.parse(localStorage.getItem('user'));
+                const docRef = doc(db, 'users', uid);
+                await updateDoc(docRef, {
+                    full_name: name,
+                    email: email,
+                    mobile: number,
+                    birthday: birthday,
+                    gender: gender,
+                });
+                console.log('Product saved');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
             console.error('Product not saved', err);
         } 
@@ -83,7 +94,7 @@ const MyProfile = () => {
                 </div>
                 <div className="flex flex-col  gap-2">
                     <p className='text-sm'>Email Address</p>
-                    <input type="text" maxLength={11} disabled={!isInput} onChange={(e) => { setEmail(e.target.value)}} value={email}/>
+                    <input type="text" disabled={!isInput} onChange={(e) => { setEmail(e.target.value)}} value={email}/>
                 </div>
                 <div className="flex flex-col gap-2">
                     <p className='text-sm'>Mobile Number</p>

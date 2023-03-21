@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
+import { useNavigate } from 'react-router-dom'
 import { 
     collection,
     getDocs,
@@ -11,7 +12,7 @@ import {
 
 const ManageAccount = () => {
 
-    const { uid }  = JSON.parse(localStorage.getItem('user'));
+    const navigate = useNavigate();
 
     const [isInput, setIsInput] = useState(false);
     const [show, setShow] = useState(false);
@@ -22,42 +23,60 @@ const ManageAccount = () => {
     const [postal, setPostal] = useState();
     const [number, setNumber] = useState();
 
+    
+
     // store data in an array of object
     const submit = async () => {
         try {
-            const docRef = doc(db, 'users', uid);
-            await updateDoc(docRef, {
-                addresses: arrayUnion({
-                    name: name,
-                    address: address,
-                    code: postal,
-                    mobile: number,      
-                    })
-            });            
-            console.log('Address saved');
+            if (localStorage.getItem('user')) {
+                const { uid }  = JSON.parse(localStorage.getItem('user'));
+                const docRef = doc(db, 'users', uid);
+                await updateDoc(docRef, {
+                    addresses: arrayUnion({
+                        name: name,
+                        address: address,
+                        code: postal,
+                        mobile: number,      
+                        })
+                });            
+                console.log('Address saved');
+            } else {
+                navigate('/');
+            }
         } catch (err) {
             console.error('Address not saved',err);
         }
         setIsInput(false);
         setShow(false);
+        
     }
 
+    // Get data in an array of object
     useEffect(() => {
-        const getAddress = async () => {
-            const docRef = doc(db, 'users', uid);
-            const docSnap = await getDoc(docRef);
-        
-            docSnap.data().addresses.forEach((list) => {
-                setName(list.name);
-                setAddress(list.address);
-                setPostal(list.code);
-                setNumber(list.mobile);              
-            });
-        }
-        getAddress();
+        if (localStorage.getItem('user')) {
+            const { uid }  = JSON.parse(localStorage.getItem('user'));
+
+            const getAddress = async () => {
+                    const docRef = doc(db, 'users', uid);
+                    const docSnap = await getDoc(docRef);
+
+                    const temp = []
+                
+                    docSnap.data().addresses.map((list) => { 
+                        temp.push(list)
+                    });
+                    setAddresses(temp);
+            }
+            getAddress();
+        } else {
+            navigate('/');
+        }       
     }, []);
     
 
+    const editBtn = async () => {
+        setIsInput(true);
+    }
 
 
     return (
@@ -73,16 +92,23 @@ const ManageAccount = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    <tr className='text-sm border-b-cyan-600'>
-                    {addresses.forEach((count) => {
-                        <tr>pasok</tr>
-                    })}
+                    {addresses.map((item, index) => (
+                        <tr key={index} className='text-sm border-b-cyan-600'>
+                            <td className='p-5'><input disabled={!isInput} type="text" value={item.name}/></td>
+                            <td className='p-5'><input disabled={!isInput} type="text" value={item.address}/></td>
+                            <td className='p-5'><input disabled={!isInput} type="text" value={item.code}/></td>
+                            <td className='p-5'><input disabled={!isInput} type="text" value={item.mobile}/></td>
+                            <td className='p-5'><button onClick={(editBtn)} className='text-cyan-600'>Edit</button></td>
+                            <td className='p-5'><button>save</button></td>
+                        </tr>
+                    ))}
+                    {/* <tr className='text-sm border-b-cyan-600'>
                         <td className='p-5'>{name}</td>
                         <td className='p-5'>{address}</td>
                         <td className='p-5'>{postal}</td>
                         <td className='p-5'>{number}</td>
                         <td className='p-5'><button className='text-cyan-600'>Edit</button></td>
-                    </tr>
+                    </tr> */}
                 </tbody>
             </table>
             <div className='flex flex-col justify-end gap-3'>
