@@ -50,6 +50,7 @@ const Cart = () => {
             if (productDoc.exists()) {
               temp = productDoc.data();
               temp['cartId'] = cart.id;
+              temp['productId'] = cart.product_id;
               temp['quantity'] = cart.quantity;
               temp['addOns'] = cart.add_ons;
               return (temp);

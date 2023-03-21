@@ -3,7 +3,7 @@ import React, {useState, useEffect} from 'react'
 const NumberCounter = ({label=null, type, price, setCounter=null, setAddOnDetails=null, initialValue=null}) => {
   
     const [count, setCount] = useState(type == 'product' ? 1 : 0);
-    const [details, setDetails] = useState({});
+    const [disabled, setDisabled] = useState(false);
 
     useEffect(() => {
         switch(type) {
@@ -12,6 +12,14 @@ const NumberCounter = ({label=null, type, price, setCounter=null, setAddOnDetail
  
         }
     },[])
+    
+    useEffect(() => {
+        if (type == 'addOns' && count <= 0 || type == 'product' && count <= 1) {
+            setDisabled(true);
+        } else {
+            setDisabled(false);
+        }
+    },[count])
 
     useEffect(() => {
         setCounter({count:count, name: label, type});
@@ -38,7 +46,7 @@ const NumberCounter = ({label=null, type, price, setCounter=null, setAddOnDetail
     <div className={`flex ${label != null ? 'gap-2' : 'self-start'} items-center justify-between`}>
         <p>{label} {price && `₱ ${price}`}</p>
         <div className='flex bg-gray-200 h-fit'>
-            <button className='px-1.5' disabled={count < 1} onClick={() => {setCount( (previousState) => previousState-=1)}}>-</button>
+            <button className='px-1.5' disabled={disabled} onClick={() => {setCount( (previousState) => previousState-=1)}}>-</button>
             <p className='bg-white px-2'>{count}</p>
             <button className='px-1.5' onClick={() => {setCount((previousState) => previousState+=1)}}>+</button>
         </div>

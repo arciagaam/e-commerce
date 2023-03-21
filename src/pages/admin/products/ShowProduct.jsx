@@ -155,7 +155,6 @@ const ShowProduct = () => {
         setSelectedImages(selectedImages.filter((e) => e !== image))
     }
 
-    // console.log(title)
 
 
     return (

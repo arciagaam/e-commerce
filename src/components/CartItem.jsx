@@ -23,14 +23,8 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal }) => {
     }, [])
 
     useEffect(() => {
-
-        console.log(cartItem);
-    }, [totalAddOns])
-
-    useEffect(() => {
         const totalPerItem = cartItem.quantity * (parseInt(cartItem.pricing) + totalAddOns);
         setTotalPrice(totalPerItem);
-        console.log(totalPerItem);
     }, [totalAddOns]);
 
     useEffect(() => {
@@ -89,6 +83,7 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal }) => {
 
             {isActive && <EditCart
                 cartItem={cartItem}
+                setIsActive={setIsActive}
             />}
 
         </>

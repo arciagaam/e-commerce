@@ -1,10 +1,26 @@
 import React from 'react'
 import NumberCounter from './NumberCounter';
 import { useState, useEffect, useRef } from 'react';
+import { db, storage, auth } from '../firebase';
+import {
+    collection,
+    getDocs,
+    getDoc,
+    addDoc,
+    updateDoc,
+    doc
+} from 'firebase/firestore';
 
-const EditCart = ({ cartItem }) => {
+const EditCart = ({ cartItem, setIsActive }) => {
 
     const cartDetails = useRef({});
+
+    useEffect(() => {
+        cartDetails.current.product_id = cartItem.productId;
+        cartDetails.current.quantity = cartItem.quantity;
+        cartDetails.current.add_ons = cartItem.addOns;
+
+    },[])
 
     const callbackCount = ({ type, name, count }) => {
         if (!cartDetails.current.add_ons) return false;
@@ -17,36 +33,31 @@ const EditCart = ({ cartItem }) => {
             })
         } else if (type == 'product') {
             cartDetails.current.quantity = count;
-            cartDetails.current.product_id = params.id;
         }
 
     }
 
-    // useEffect(() => {
-
-    // },[])
-
     const handleEditCart = async () => {
 
         console.log(cartDetails);
-        // if (localStorage.getItem('user')) {
-        //     const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
+        if (localStorage.getItem('user')) {
+            const cartRef = doc(db, `users/${auth.currentUser.uid}/cart`, cartItem.cartId);
 
-        //     await addDoc(cartRef, cartDetails.current)
-        //         .then(() => { console.log('success') })
-        //         .catch(() => { console.log('error') });
+            await updateDoc(cartRef, cartDetails.current)
+                .then(() => { console.log('Edited Cart Item Successfully!') })
+                .catch(() => { console.log('Error!') });
 
-        //     location.reload();
-        // } else {
-        //     navigate('/login')
-        // }
+            location.reload();
+        } else {
+            navigate('/login')
+        }
 
     }
 
 
     return (
         <div className='flex absolute inset-0 z-20 justify-center items-center bg-gray-900/25'>
-            <div className="flex flex-col gap-24 w-1/2 h-3/4 bg-gray-300">
+            <div className="flex flex-col gap-12 p-8 h-3/4 bg-gray-300">
                 <div className="flex justify-end">
                     <button className="flex px-5 pt-2" onClick={() => setIsActive(false)}>X</button>
                 </div>
@@ -58,7 +69,7 @@ const EditCart = ({ cartItem }) => {
                         <img className='object-cover' src={cartItem.images[0].url}></img>
                     </div>
 
-                    <div className="flex flex-col gap-10 w-[50%]">
+                    <div className="flex flex-col gap-4 w-[50%]">
                         <div className="flex flex-col">
                             <p className='text-4xl'>{cartItem.name}</p>
                             <p className='text-2xl'>₱{cartItem.pricing}</p>
@@ -79,7 +90,7 @@ const EditCart = ({ cartItem }) => {
                         <div className="flex flex-col">
                             <p className='font-bold'>Add-ons:</p>
 
-                            <div className="grid grid-cols-2 gap-5">
+                            <div className="grid grid-cols-2 gap-5 pr-5">
                                 {cartItem.addOns &&
                                     cartItem.addOns.map((addon, index) => <NumberCounter key={index} label={addon.name} type={'addOns'} price={addon.price} setCounter={callbackCount} initialValue={cartItem.quantity} />)}
 

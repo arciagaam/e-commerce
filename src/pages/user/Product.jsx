@@ -19,44 +19,6 @@ const Product = () => {
     const [itemCount, setItemCount] = useState(0);
     const cartDetails = useRef({});
 
-    // const callbackAddOnDetails = (details) => {
-    //     if (Object.keys(details).length) {
-    //         setAddOnDetails(details);
-    //     }
-    // }
-
-    // useEffect(() => {
-    //     setAddOnsArray((prevArray) => prevArray.concat(addOnDetails));
-    // }, [addOnDetails]);
-
-    // useEffect(() => {
-    //     setFinalAddOns(() => {
-    //         let temp = addOnsArray.sort((a, b) => {
-    //             if (a.name < b.name) {
-    //               return -1;
-    //             } else if (a.name > b.name) {
-    //               return 1;
-    //             } else {
-    //               return 0;
-    //             }
-    //           });
-
-    //         let prevName = '';
-    //         let result = temp.filter((addOn, index, arr) => {
-    //             if (addOn.name === prevName) {
-    //                 arr.splice(index - 1, 1);
-    //             } else {
-    //                 prevName = addOn.name;
-    //             }
-    //             return addOn;
-    //         });
-
-    //         result = result.filter((addOn) => (Object.keys(addOn).length !== 0 && addOn.quantity !== 0));
-
-    //         return result;
-    //     })
-    // }, [addOnsArray])
-
     useEffect(() => {
 
         const getProduct = async () => {
