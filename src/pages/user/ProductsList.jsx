@@ -35,7 +35,6 @@ const ProductsList = () => {
 
     useEffect(() => {
         const getProductList = async () => {
-            console.log(selectedCollection.id);
             const docRef = collection(db, 'products')
             const q = query(docRef, where('collection', '==', selectedCollection.id));
             const docSnap = await getDocs(q)
@@ -43,7 +42,6 @@ const ProductsList = () => {
             const data = []
 
             docSnap.forEach((snap) => {
-                console.log(selectedCollection.id);
                 data.push({ ...snap.data(), id: snap.id })
             })
 
@@ -135,7 +133,6 @@ const ProductsList = () => {
             <div className="relative grid grid-rows-2 grid-cols-5 w-full">
                 {
                     productList.map((product, index) => {
-                    console.log(product.name)
                     return <ProductCard
                         key={index}
                         index={index}
