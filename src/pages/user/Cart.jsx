@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { db, storage } from '../../firebase';
 import {
   collection,
@@ -23,9 +23,6 @@ const Cart = () => {
   const callbackTotal = (totalPrice) => {
     setTotalPrice((prevTotal) => prevTotal + totalPrice);
   }
-
-  useEffect(() => {
-  },[totalPrice])
 
   useEffect(() => {
     if (localStorage.getItem('user')) {
@@ -111,7 +108,9 @@ const Cart = () => {
             <p>Php {totalPrice}</p>
           </div>
 
-          <button>Checkout</button>
+          {totalPrice !== 0 && <Link to={`/checkout`} state={{cart: cartItems}}>Checkout</Link> }
+
+          
 
         </div>
 

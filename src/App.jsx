@@ -27,6 +27,7 @@ import ManageAccount from './components/profile/ManageAccount';
 import MyProfile from './components/profile/MyProfile';
 import AddressBook from './components/profile/AddressBook';
 import Cart from './pages/user/Cart';
+import Checkout from './pages/user/Checkout';
 const App = () => {
   
   return (
@@ -50,6 +51,8 @@ const App = () => {
               </Route>
               
             <Route path='product' element={<Product/>}/>
+
+            <Route path='checkout' element={<Checkout/>}/>
         </Route>
 
           <Route path='/admin' element={<AdminNavbar />}>

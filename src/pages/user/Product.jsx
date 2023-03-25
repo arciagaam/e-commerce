@@ -9,10 +9,12 @@ import {
     addDoc,
     doc
 } from 'firebase/firestore';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 const Product = () => {
     const params = useParams();
+    const navigate = useNavigate();
+    
     const [product, setProduct] = useState({});
     const [reviews, setReviews] = useState()
     const [dataCollection, setDataCollection] = useState({})
@@ -81,7 +83,6 @@ const Product = () => {
 
     const handleAddToCart = async () => {
 
-        console.log(cartDetails);
         if(localStorage.getItem('user')){
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
