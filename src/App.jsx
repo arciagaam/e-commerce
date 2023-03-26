@@ -16,7 +16,8 @@ import AdminNavbar from './components/AdminNavbar';
 import Dashboard from './pages/admin/Dashboard';
 import Inventory from './pages/admin/Inventory';
 import Products from './pages/admin/products/Products';
-import Orders from './pages/admin/Orders';
+import Orders from './pages/admin/orders/Orders';
+import ShowOrder from './pages/admin/orders/ShowOrder';
 import Collections from './pages/admin/collections/Collections';
 import AddProduct from './pages/admin/products/AddProduct';
 import AddCollection from './pages/admin/collections/AddCollection';
@@ -58,6 +59,7 @@ const App = () => {
           <Route path='/admin' element={<AdminNavbar />}>
             <Route index element={<Dashboard />}></Route>
             <Route path='orders' element={<Orders />}></Route>
+            <Route path='orders/:id' element={<ShowOrder />}></Route>
             <Route path='products' element={<Products />}></Route>
             <Route path='products/add' element={<AddProduct />}></Route>
             <Route path='products/:id' element={<ShowProduct />}></Route>

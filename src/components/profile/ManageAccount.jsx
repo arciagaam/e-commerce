@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { useNavigate } from 'react-router-dom'
-import { 
+import {
     collection,
     getDocs,
     getDoc,
     updateDoc,
     doc,
+    query,
+    where
 } from "firebase/firestore";
+import TableRow from '../TableRow';
 
 const ManageAccount = () => {
 
@@ -17,32 +20,49 @@ const ManageAccount = () => {
     const [number, setNumber] = useState();
     const [birthday, setBirthday] = useState();
     const [gender, setGender] = useState();
+    const [orders, setOrders] = useState([]);
 
-        useEffect(() => {
-            if (localStorage.getItem('user')) {
-                const { uid }  = JSON.parse(localStorage.getItem('user'));
+    useEffect(() => {
+        if (localStorage.getItem('user')) {
+            const { uid } = JSON.parse(localStorage.getItem('user'));
 
-                const fetch = async () => {
-                    const docRef = doc(db, 'users', uid);
-                    const docSnap = await getDoc(docRef);
+            const fetch = async () => {
+                const docRef = doc(db, 'users', uid);
+                const docSnap = await getDoc(docRef);
 
-                    if (docSnap.exists()) {
-                        setName(docSnap.data().full_name);
-                        setEmail(docSnap.data().email);
-                        setNumber(docSnap.data().number);
-                        setBirthday(docSnap.data().birthday);
-                        setGender(docSnap.data().gender);
-                    } else {
-                        console.log ('User not found.');
-                    }
-
+                if (docSnap.exists()) {
+                    setName(docSnap.data().full_name);
+                    setEmail(docSnap.data().email);
+                    setNumber(docSnap.data().number);
+                    setBirthday(docSnap.data().birthday);
+                    setGender(docSnap.data().gender);
+                } else {
+                    console.log('User not found.');
                 }
 
-                fetch();
-            } else {
-                navigate('/');
             }
-        }, []); 
+
+            const getOrders = async () => {
+                const ordersRef = collection(db, 'orders');
+                const q = query(ordersRef, where('user_id', '==', uid));
+                const ordersDoc = await getDocs(q);
+
+                const data = [];
+
+                ordersDoc.forEach((order) => {
+                    data.push({...order.data(), id: order.id});
+                })
+
+                console.log(data);
+                setOrders(data);
+            }
+
+            fetch();
+            getOrders();
+        } else {
+            navigate('/');
+        }
+    }, []);
 
     return (
         <div className="flex flex-col gap-5">
@@ -76,37 +96,29 @@ const ManageAccount = () => {
                 </div>
             </div>
             <div className="flex flex-col shadow-md border-2">
-                <div className='bg-zinc-200 p-4'>
+                <div className=''>
                     <p className='text-lg'>Recent Orders</p>
                 </div>
-                <table className='table-auto text-left'>
+                <table className='w-full rounded-md overflow-hidden'>
                     <thead>
-                        <tr>
-                            <th>Order No.</th>
+                        <tr className='text-left bg-accent-default text-white'>
+                            <th className='p-2'>Order ID</th>
                             <th>Placed on</th>
                             <th>Items</th>
                             <th>Total</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td>123456789</td>
-                            <td>28/12/22</td>
-                            <td>Crochet Bouquet</td>
-                            <td>₱90.00</td>
-                        </tr>
-                        <tr>
-                            <td>123456789</td>
-                            <td>28/12/22</td>
-                            <td>Crochet Bouquet</td>
-                            <td>₱90.00</td>
-                        </tr>
-                        <tr>
-                            <td>123456789</td>
-                            <td>28/12/22</td>
-                            <td>Crochet Bouquet</td>
-                            <td>₱90.00</td>
-                        </tr>
+
+                    <tbody className='bg-zinc-200 p-4'>
+                        {orders.map((order, index) => {
+                            return <TableRow
+                                key={index}
+                                table={'profileOrders'}
+                                id={order.id}
+                                order={order}
+
+                            />
+                        })}
                     </tbody>
                 </table>
             </div>

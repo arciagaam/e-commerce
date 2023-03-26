@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import EditCart from './EditCart';
 
-const CartItem = ({ cartItem, setDeletedItem, setTotal, isCheckout = true }) => {
+const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
 
     const [totalPrice, setTotalPrice] = useState(0);
     const [totalAddOns, setTotalAddOns] = useState(0);
@@ -74,7 +74,7 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isCheckout = true }) => 
                         <p>Total: {totalPrice}</p>
                     </div>
 
-                    {isCheckout && (
+                    {isDisplay && (
                         <div className="flex flex-row gap-2">
                             <button onClick={() => setIsActive(!isActive)}>Edit</button>
                             <button onClick={(value) => handleRemove(value = cartItem.cartId)}>Remove</button>
