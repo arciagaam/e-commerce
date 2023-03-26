@@ -23,7 +23,6 @@ const Product = () => {
     const cartDetails = useRef({});
 
     useEffect(() => {
-
         const getProduct = async () => {
             const docRef = doc(db, 'products', params.id);
             const snapData = await getDoc(docRef);
@@ -57,7 +56,6 @@ const Product = () => {
             }
         }
         getProduct();
-
     }, []);
 
     useEffect(() => {

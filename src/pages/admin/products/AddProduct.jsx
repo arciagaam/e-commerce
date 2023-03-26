@@ -12,6 +12,8 @@ import {
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { useNavigate } from 'react-router-dom';
 
+
+
 const AddProduct = () => {
     const navigate = useNavigate();
 
@@ -23,6 +25,11 @@ const AddProduct = () => {
 
     const [dropDownCollection, setDropDownCollection] = useState('')
     const [collections, setCollections] = useState([]);
+    
+    const [addInclusionActive, setAddInclusionActive] = useState(false);
+    const [inclusions, setInclusions] = useState([]);
+    const [newInclusion, setNewInclusion] = useState('');
+    const [newInclusionLoading, setNewInclusionLoading] = useState(false);
 
     const [images, setImages] = useState([]);
     const [selectedImages, setSelectedImages] = useState([]);
@@ -30,6 +37,13 @@ const AddProduct = () => {
     const [imageDetails, setImageDetails] = useState([]);
     const [product, setProduct] = useState({});
 
+    const handleAddInclusion = () => {
+        if(newInclusion == '') return;
+
+        setInclusions((prevInclusions) => prevInclusions.concat(newInclusion));
+        setNewInclusionLoading(false);
+        setNewInclusion('');
+    }
 
     const handleSubmit = async () => {
         try {
@@ -39,6 +53,7 @@ const AddProduct = () => {
                 pricing: pricing,
                 costPerItem: costPerItem,
                 inventory: quantity,
+                inclusions:inclusions,
                 status: 1,
                 type: 'Merchandise',
                 collection: dropDownCollection,
@@ -126,6 +141,27 @@ const AddProduct = () => {
                             <label htmlFor="description">Description</label>
                             <textarea onChange={(e) => { setDescription(e.target.value) }} name="description" id="" cols="30" rows="4" className='resize-none border rounded-md p-1 px-2'></textarea>
                         </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
+                        <p className='font-medium text-accent-default'>Inclusions</p>
+
+                        {inclusions && inclusions.map((inclusion, index) => (
+                            <div className="flex flex-row justify-between">
+                                <p>{inclusion}</p>
+                                <button onClick={()=>{setInclusions((prevInclusions=>(prevInclusions.filter(e => (inclusion != e)))))}}>Remove</button>
+                            </div>
+                        ))}
+
+                        <div className={`flex flex-col ${addInclusionActive ? 'max-h-[calc(100%)]' : 'max-h-0'} overflow-hidden transition-all duration-200 ease-in-out`}>
+                            <label htmlFor="new_inclusion">New Inclusion</label>
+                            <div className="flex flex-row gap-10">
+                            <input type="text" name='new_inclusion' id='new_inclusion' value={newInclusion} onChange={(e)=>{setNewInclusion(e.target.value)}} className='border rounded-md p-1 px-2 flex-1' disabled={newInclusionLoading}/>
+                            <button onClick={newInclusionLoading ? null : handleAddInclusion} className={`bg-accent-default text-white py-2 px-3 rounded-md hover:bg-accent-light ${newInclusionLoading && 'bg-accent-dark/30 hover:bg-accent-dark/30 cursor-not-allowed'} `}>Add</button>
+                            </div>
+                        </div>
+
+                        <button onClick={()=>{setAddInclusionActive(!addInclusionActive)}} className={`cursor-pointer w-fit`}>{addInclusionActive?'Cancel':'+ Add Inclusion'}</button>
                     </div>
 
                     <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">

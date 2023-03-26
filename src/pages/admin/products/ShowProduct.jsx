@@ -11,7 +11,8 @@ import {
     doc,
     deleteDoc,
     where,
-    query
+    query,
+    arrayUnion
 } from "firebase/firestore";
 import { ref, getDownloadURL, uploadBytes, deleteObject } from 'firebase/storage';
 
@@ -26,6 +27,11 @@ const ShowProduct = () => {
     const [dataProduct, setDataProduct] = useState('');
     const [dropDownCollection, setDropDownCollection] = useState('');
 
+    const [addInclusionActive, setAddInclusionActive] = useState(false);
+    const [inclusions, setInclusions] = useState([]);
+    const [newInclusion, setNewInclusion] = useState('');
+    const [newInclusionLoading, setNewInclusionLoading] = useState(false);
+    
     const [collections, setCollections] = useState([]);
     const [imageFileNames, setImageFileNames] = useState([]);
 
@@ -33,6 +39,15 @@ const ShowProduct = () => {
     const [images, setImages] = useState([]); // FILES
     const [removedImages, setRemovedImages] = useState([]); // FROM DB
     const [previousSelected, setPreviousSelected] = useState([]);
+
+    const handleAddInclusion = async() => {
+
+        if(newInclusion == '') return;
+
+        setInclusions((prevInclusions) => prevInclusions.concat(newInclusion));
+        setNewInclusionLoading(false);
+        setNewInclusion('');
+    }
 
     const handleSubmit = async () => {
         try {
@@ -42,6 +57,7 @@ const ShowProduct = () => {
                 description: description,
                 pricing: pricing,
                 costPerItem: costPerItem,
+                inclusions:inclusions,
                 inventory: quantity,
                 status: 1,
                 type: 'Merchandise',
@@ -118,6 +134,7 @@ const ShowProduct = () => {
                 setPricing(docSnap.data().pricing);
                 setCostPerItem(docSnap.data().costPerItem);
                 setQuantity(docSnap.data().inventory);
+                setInclusions(docSnap.data().inclusions);
 
                 const temp = docSnap.data().images.map(image => {
                     return ({ url: image.url, file_name: image.file_name });
@@ -182,6 +199,24 @@ const ShowProduct = () => {
                     </div>
 
                     <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
+                        <p className='font-medium text-accent-default'>Inclusions</p>
+
+                        {inclusions && inclusions.map((inclusion, index) => (
+                            <div className="flex flex-row">{inclusion}</div>
+                        ))}
+
+                        <div className={`flex flex-col ${addInclusionActive ? 'max-h-[calc(100%)]' : 'max-h-0'} overflow-hidden transition-all duration-200 ease-in-out`}>
+                            <label htmlFor="new_inclusion">New Inclusion</label>
+                            <div className="flex flex-row gap-10">
+                            <input type="text" name='new_inclusion' id='new_inclusion' value={newInclusion} onChange={(e)=>{setNewInclusion(e.target.value)}} className='border rounded-md p-1 px-2 flex-1' disabled={newInclusionLoading}/>
+                            <button onClick={newInclusionLoading ? null : handleAddInclusion} className={`bg-accent-default text-white py-2 px-3 rounded-md hover:bg-accent-light ${newInclusionLoading && 'bg-accent-dark/30 hover:bg-accent-dark/30 cursor-not-allowed'} `}>Add</button>
+                            </div>
+                        </div>
+
+                        <button onClick={()=>{setAddInclusionActive(!addInclusionActive)}} className={`cursor-pointer w-fit`}>{addInclusionActive?'Cancel':'+ Add Inclusion'}</button>
+                    </div>
+
+                    <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
                         <p className='font-medium text-accent-default'>Media</p>
 
                         <div className="border rounded-md p-1 px-2 py-2 flex flex-row flex-wrap gap-2">
@@ -230,7 +265,7 @@ const ShowProduct = () => {
                             <select name="collection" id="collection" className='border rounded-md p-1 px-2 w-full' onChange={(e) => { setDropDownCollection(e.target.value) }}>
                                 <option value="none">None</option>
                                 {collections.map((collection, index) => {
-                                    return <option key={index} value={collection.id} selected={dataProduct.collection == collection.id ? true : null }>{collection.title}</option>
+                                    return <option key={index} value={collection.id} selected={dataProduct.collection == collection.id ? true : null}>{collection.title}</option>
                                 })}
                             </select>
                         </div>
