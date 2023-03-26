@@ -11,6 +11,7 @@ import {
     addDoc,
     deleteDoc
 } from 'firebase/firestore';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 const Checkout = () => {
 
@@ -19,37 +20,40 @@ const Checkout = () => {
 
     const [userAddress, setUserAddress] = useState({});
     const [totalPrice, setTotalPrice] = useState(0);
-    const [isCheckout, setIsCheckout] = useState(false);
+    const [isDisplay, setIsDisplay] = useState(false);
     const [checkOutItems, setCheckOutItems] = useState([]);
     const [totalCheckout, setTotalCheckout] = useState(0);
-    const [paymentMethod, setPaymentMethod] = useState('');
+    const [paymentMethod, setPaymentMethod] = useState('Cash On Delivery');
 
     const callbackTotal = (totalPrice) => {
         setTotalPrice((prevTotal) => prevTotal + totalPrice);
     }
 
     const handlePlaceOrder = async () => {
-        if(localStorage.getItem('user')) {
+        if (localStorage.getItem('user')) {
+            const { uid } = JSON.parse(localStorage.getItem('user'));
+            const date = new Date().toLocaleDateString();
 
             const cartIds = checkOutItems.map(item => item.cartId);
             const orderRef = collection(db, 'orders');
             const orderDoc = {
+                user_id: uid,
                 total_price: totalCheckout,
                 total_paid: 0,
                 payment_method: paymentMethod,
-                status: 'Pending',
-                products: checkOutItems
+                status: 'placed',
+                products: checkOutItems,
+                order_date: date
             }
             // console.log(productIds)
             await addDoc(orderRef, orderDoc)
-            .then(() => {console.log('Successfully Ordered!')})
-            .catch(() => {console.log('Error!')})
+                .then(() => { console.log('Successfully Ordered!') })
+                .catch(() => { console.log('Error!') })
 
-            cartIds.forEach( async (cartId) => {
-                const cartDocRef = doc(db, `users/${auth.currentUser.uid}/cart`, cartId);
-
+            for (const id of cartIds) {
+                const cartDocRef = doc(db, `users/${auth.currentUser.uid}/cart`, id);
                 await deleteDoc(cartDocRef);
-            })
+            }
 
             navigate('/account');
         }
@@ -57,6 +61,15 @@ const Checkout = () => {
 
     const selectPaymentMethod = (method) => {
         setPaymentMethod(method);
+    }
+
+    const displayCheckoutButton = () => {
+        if (paymentMethod == 'Cash On Delivery') {
+            console.log('hello');
+            return (<button onClick={handlePlaceOrder} className="p-3 bg-accent-default">PLACE ORDER</button>)
+        } else if (paymentMethod == 'PayPal') {
+            return (<button>Hello</button>)
+        }
     }
 
     useEffect(() => {
@@ -84,7 +97,8 @@ const Checkout = () => {
 
     useEffect(() => {
         console.log(paymentMethod);
-    },[paymentMethod])
+        displayCheckoutButton();
+    }, [paymentMethod])
 
     return (
         <div className='flex flex-row columns-2 h-auto gap-4 px-52 w-full '>
@@ -112,7 +126,7 @@ const Checkout = () => {
                             return <CartItem
                                 key={cartItem.cartId}
                                 setTotal={callbackTotal}
-                                isCheckout={isCheckout}
+                                isDisplay={isDisplay}
                                 cartItem={cartItem} />
                         })
                     }
@@ -122,11 +136,11 @@ const Checkout = () => {
             <div className="flex w-2/6 flex-col p-3 gap-5 bg-zinc-200">
                 <div className="flex flex-col gap-2">
                     <p className='text-lg'>Select Payment Method</p>
-                    <button onClick={() => selectPaymentMethod('cod')} className="flex flex-row gap-3 p-5 items-center">
+                    <button onClick={() => selectPaymentMethod('Cash On Delivery')} className="flex flex-row gap-3 p-5 items-center">
                         <box-icon size='lg' name='money'></box-icon>
                         <p>Cash On Delivery</p>
                     </button>
-                    <button onClick={() => selectPaymentMethod('paypal')} className="flex flex-row gap-3 p-5 items-center">
+                    <button onClick={() => selectPaymentMethod('PayPal')} className="flex flex-row gap-3 p-5 items-center">
                         <box-icon size='lg' name='paypal' type='logo' ></box-icon>
                         <p>Paypal</p>
                     </button>
@@ -148,7 +162,29 @@ const Checkout = () => {
 
                 </div>
 
-                <button onClick={handlePlaceOrder} className="p-3 bg-accent-default">PLACE ORDER</button>
+                {paymentMethod == 'Cash On Delivery' ?
+                    <button onClick={handlePlaceOrder} className="p-3 bg-accent-default">PLACE ORDER</button>
+                    :
+                    <PayPalScriptProvider
+                        options={{ "client-id": "AU-7_We1OS5QiDFAMoDHBwfECjIB_xUAu0FKHtQ1a16jRyOuUBsSlQHg_bHlcXTsw-rYKI87ztNS3hhH" }}>
+                        <PayPalButtons createOrder={(data, actions) => {
+                            return actions.order.create({
+                                purchase_units: [
+                                    {
+                                        amount: {
+                                            value: `${totalCheckout}`,
+                                        },
+                                    },
+                                ],
+                            });
+                        }}
+                            onApprove={(data, actions) => {
+                                return actions.order.capture().then(() => {
+                                    handlePlaceOrder
+                                });
+                            }}
+                        />
+                    </PayPalScriptProvider>}
             </div>
         </div>
     )
