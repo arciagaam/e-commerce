@@ -21,7 +21,6 @@ const Product = () => {
     }
 
     useEffect(() => {
-
         const getProduct = async () => {
             const docRef = doc(db, 'products', params.id);
             const snapData = await getDoc(docRef);
@@ -35,7 +34,6 @@ const Product = () => {
             }
         }
         getProduct();
-
     }, []);
     return (
 

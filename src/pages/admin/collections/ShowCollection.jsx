@@ -116,7 +116,7 @@ const ShowCollection = () => {
                         <div className="flex flex-row flex-wrap">
 
                             {products.map((product, index) => {
-                                return <Products key={index} product={product} />
+                                return <Products key={index} product={product}/>
                             })}
 
                         </div>
@@ -132,7 +132,7 @@ const ShowCollection = () => {
                         <div className="flex flex-col gap-2">
                             {addOns &&
                                 addOns.map((addOn, index) => {
-                                    return <AddOn key={index} addOn={addOn} index={index} handleAddOnChange={handleAddOnChange} />
+                                    return <AddOn key={index} addOn={addOn} index={index} handleAddOnChange={handleAddOnChange} addOns={addOns} setAddOns={setAddOns}/>
                                 })
                             }
                         </div>
@@ -158,8 +158,11 @@ const ShowCollection = () => {
 }
 
 const Products = ({ product }) => {
+    console.log(product)
     return (
-        <div className="flex flex-col justify-center items-center min-h-[50px] w-[20%] border">
+        <div className="flex flex-col justify-center items-center w-[20%] border overflow-hidden rounded-md">
+                <img src={product.images.length > 0 && product.images[0].url} className='object-cover w-full aspect-[9/16]' alt="" />
+
             <p>{product.name}</p>
         </div>
     )
