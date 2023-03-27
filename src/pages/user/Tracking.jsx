@@ -13,10 +13,8 @@ const Tracking = () => {
     const [textStatus, setTextStatus] = useState('');
     useEffect(() => {
         const getOrderData = async () => {
-            setOrderID(params.id);
             const docRef = doc(db, 'orders', params.id)
             const docSnap = await getDoc(docRef);
-
             if (docSnap.exists()) {
                 setMessage('');
                 setOrderData({ ...docSnap.data(), id: docSnap.id });
@@ -84,7 +82,7 @@ const Tracking = () => {
                 <p className='text-xl'>Track your order</p>
                 <form action={`/track/${orderID}`} method="GET" className='flex flex-col gap-2 w-full'>
                     <input onChange={(e) => { setOrderID(e.target.value) }} value={orderID} type="text" className='border rounded-md text-2xl py-2 w-[60%] self-center text-center' />
-                    <button type='submit'>Search</button>
+                    <button type='submit' className='py-2 px-5 bg-accent-default w-fit self-center rounded-md text-white'>Search</button>
                 </form>
 
                 <p>{message}</p>

@@ -49,7 +49,7 @@ const Home = () => {
                     <div className="relative flex h-[60vh] justify-center items-center overflow-hidden">
                         <div className="flex flex-col items-center z-[2] text-white gap-5">
                             <p className='text-4xl'>Dried Flower Bouquets</p>
-                            <button onClick={()=>{navigate('Shop')}} className='text-lg py-3 px-6 bg-accent-default text-white rounded-md hover:text-accent-dark hover:bg-accent-light transition-all duration-200'>Shop Now</button>
+                            <button onClick={()=>{navigate('products')}} className='text-lg py-3 px-6 bg-accent-default text-white rounded-md hover:text-accent-dark hover:bg-accent-light transition-all duration-200'>Shop Now</button>
                         </div>
 
                         <div className="absolute inset-0 bg-hero bg-no-repeat bg-cover bg-center bg-accent-dark z-[1]"></div>
