@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { useNavigate } from 'react-router-dom'
-import { 
+import {
     collection,
     getDocs,
     getDoc,
@@ -24,12 +24,12 @@ const MyProfile = () => {
     const [birthday, setBirthday] = useState('');
     const [gender, setGender] = useState('');
 
-    
-    
+
+
     // Get data of logged in user
     useEffect(() => {
         if (localStorage.getItem('user')) {
-            const { uid }  = JSON.parse(localStorage.getItem('user'));
+            const { uid } = JSON.parse(localStorage.getItem('user'));
             const fetch = async () => {
                 const docRef = doc(db, 'users', uid);
                 const docSnap = await getDoc(docRef);
@@ -40,7 +40,7 @@ const MyProfile = () => {
                     setBirthday(docSnap.data().birthday);
                     setGender(docSnap.data().gender);
                 } else {
-                    console.log ('User not found.');
+                    console.log('User not found.');
                 }
             }
             fetch();
@@ -53,7 +53,7 @@ const MyProfile = () => {
     const submit = async () => {
         try {
             if (localStorage.getItem('user')) {
-                const { uid }  = JSON.parse(localStorage.getItem('user'));
+                const { uid } = JSON.parse(localStorage.getItem('user'));
                 const docRef = doc(db, 'users', uid);
                 await updateDoc(docRef, {
                     full_name: name,
@@ -68,7 +68,7 @@ const MyProfile = () => {
             }
         } catch (err) {
             console.error('Product not saved', err);
-        } 
+        }
         setIsInput(false);
         setShow(false);
     }
@@ -86,45 +86,49 @@ const MyProfile = () => {
 
 
     return (
-        <div className="flex flex-col gap-5 bg-zinc-200 p-5 shadow-sm">
-            <div className="grid grid-cols-3 gap-8">
-                <div className="flex flex-col gap-2">
-                    <p className='text-sm'>Full Name</p>
-                    <input type="text" disabled={!isInput} onChange={(e) => {setName(e.target.value)}} value={name}/>
-                </div>
-                <div className="flex flex-col  gap-2">
-                    <p className='text-sm'>Email Address</p>
-                    <input type="text" disabled={!isInput} onChange={(e) => { setEmail(e.target.value)}} value={email}/>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <p className='text-sm'>Mobile Number</p>
-                    <input type="tel" onChange={(e) => { numberHandler(e.target.value)}} disabled={!isInput} value={number}/>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <p className='text-sm'>Birthday</p>
-                    <input type="date" disabled={!isInput} onChange={(e) => { setBirthday(e.target.value)}}  value={birthday}/>
+        <>
+            <p className='text-2xl'>Manage My Account</p>
+
+            <div className="flex flex-col gap-5 bg-zinc-200 p-5 shadow-sm">
+                <div className="grid grid-cols-3 gap-8">
+                    <div className="flex flex-col gap-2">
+                        <p className='text-sm'>Full Name</p>
+                        <input type="text" disabled={!isInput} onChange={(e) => { setName(e.target.value) }} value={name} />
+                    </div>
+                    <div className="flex flex-col  gap-2">
+                        <p className='text-sm'>Email Address</p>
+                        <input type="text" disabled={!isInput} onChange={(e) => { setEmail(e.target.value) }} value={email} />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <p className='text-sm'>Mobile Number</p>
+                        <input type="tel" onChange={(e) => { numberHandler(e.target.value) }} disabled={!isInput} value={number} />
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <p className='text-sm'>Birthday</p>
+                        <input type="date" disabled={!isInput} onChange={(e) => { setBirthday(e.target.value) }} value={birthday} />
+
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <p className='text-sm'>Gender</p>
+                        <select name="Gender" id="gender" disabled={!isInput} onChange={(e) => { setGender(e.target.value) }} value={gender}>
+                            <option value=""></option>
+                            <option value="Female">Female</option>
+                            <option value="Male">Male</option>
+                        </select>
+
+                    </div>
 
                 </div>
-                <div className="flex flex-col gap-2">
-                    <p className='text-sm'>Gender</p>
-                    <select name="Gender" id="gender" disabled={!isInput} onChange={(e) => { setGender(e.target.value)}} value={gender}>
-                        <option value=""></option>
-                        <option value="Female">Female</option>
-                        <option value="Male">Male</option>
-                    </select>
-
+                <div className="flex flex-col gap-3">
+                    <div className="flex flex-end gap-3">
+                        <button className='text-lg p-3 w-56 bg-accent-default mr-auto' onClick={() => edit()}>Edit Profile</button>
+                        <button className='text-base p-3 w-20 bg-accent-default' hidden={!show} onClick={submit} type='submit'>Save</button>
+                        {/* <button className='text-base p-3 w-20 bg-accent-default' hidden={show} onClick={edit} type='submit'>Cancel</button> */}
+                    </div>
+                    <button className='text-lg p-3 w-56 bg-accent-default'>Set Password</button>
                 </div>
-                
             </div>
-            <div className="flex flex-col gap-3">
-                <div className="flex flex-end gap-3">
-                    <button className='text-lg p-3 w-56 bg-accent-default mr-auto' onClick={() => edit()}>Edit Profile</button>
-                    <button className='text-base p-3 w-20 bg-accent-default' hidden={!show} onClick={submit} type='submit'>Save</button>
-                    {/* <button className='text-base p-3 w-20 bg-accent-default' hidden={show} onClick={edit} type='submit'>Cancel</button> */}
-                </div>
-                <button className='text-lg p-3 w-56 bg-accent-default'>Set Password</button>
-            </div>
-        </div>
+        </>
     )
 }
 

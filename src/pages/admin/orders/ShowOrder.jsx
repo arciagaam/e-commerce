@@ -64,7 +64,6 @@ const ShowOrder = () => {
 
         getDetails();
     }, [])
-
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
@@ -96,7 +95,7 @@ const ShowOrder = () => {
                             </div>
                             <div className="flex flex-col">
                                 <p>Order Date</p>
-                                <p>{orderDetails.order_date}</p>
+                                <p>{orderDetails.order_date?.toDate().toLocaleDateString()}</p>
                             </div>
                             <div className="flex flex-col">
                                 <p>Amount Paid</p>

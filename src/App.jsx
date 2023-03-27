@@ -29,6 +29,7 @@ import MyProfile from './components/profile/MyProfile';
 import AddressBook from './components/profile/AddressBook';
 import Cart from './pages/user/Cart';
 import Checkout from './pages/user/Checkout';
+import Tracking from './pages/user/Tracking';
 const App = () => {
   
   return (
@@ -42,6 +43,8 @@ const App = () => {
             <Route path='products' element={<ProductsList />} />
             <Route path='about' element={<AboutUs />} />
             <Route path='cart' element={<Cart/>}/>
+            <Route path='track' element={<Tracking/>}/>
+            <Route path='track/:id' element={<Tracking/>}/>
 
             <Route path='product/:id' element={<Product/>}/>
 
