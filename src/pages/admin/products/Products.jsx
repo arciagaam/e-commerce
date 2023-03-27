@@ -72,7 +72,7 @@ const Products = () => {
               }
             });
           });
-
+          location.reload();
         })
       }
     }

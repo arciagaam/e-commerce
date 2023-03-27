@@ -48,6 +48,7 @@ const Collections = () => {
 
     const deleteCollectionItem = async () => {
       if (deleteCollectionId) {
+        console.log(deleteCollectionId);
         const docRef = doc(db, 'collections', deleteCollectionId);
 
         await deleteDoc(docRef).then(async () => {
@@ -63,6 +64,7 @@ const Collections = () => {
           });
 
           console.log('Deleted collection successfully!');
+          location.reload();
         })
       }
     }

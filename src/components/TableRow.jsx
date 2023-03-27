@@ -5,7 +5,7 @@ const TableRow = ({ table, id, name, description, status, inventory, type, order
   const handleDelete = (id, e) => {
     e.stopPropagation();
     handleDeleteItem(id);
-    location.reload();
+    // location.reload();
   }
   
   switch (table) {
