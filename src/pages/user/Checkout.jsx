@@ -9,7 +9,8 @@ import {
     getDoc,
     doc,
     addDoc,
-    deleteDoc
+    deleteDoc,
+    serverTimestamp
 } from 'firebase/firestore';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
@@ -32,7 +33,6 @@ const Checkout = () => {
     const handlePlaceOrder = async () => {
         if (localStorage.getItem('user')) {
             const { uid } = JSON.parse(localStorage.getItem('user'));
-            const date = new Date().toLocaleDateString();
 
             const cartIds = checkOutItems.map(item => item.cartId);
             const orderRef = collection(db, 'orders');
@@ -43,7 +43,7 @@ const Checkout = () => {
                 payment_method: paymentMethod,
                 status: 'placed',
                 products: checkOutItems,
-                order_date: date
+                order_date: serverTimestamp()
             }
             // console.log(productIds)
             await addDoc(orderRef, orderDoc)

@@ -7,20 +7,23 @@ import {
     getDocs,
     getDoc,
     addDoc,
-    doc
+    doc,
+    query,
+    where
 } from 'firebase/firestore';
 import { useNavigate, useParams } from 'react-router-dom';
 
 const Product = () => {
     const params = useParams();
     const navigate = useNavigate();
-    
+
     const [product, setProduct] = useState({});
     const [reviews, setReviews] = useState()
     const [dataCollection, setDataCollection] = useState({})
     const [isLoading, setIsLoading] = useState(true);
     const [itemCount, setItemCount] = useState(0);
     const cartDetails = useRef({});
+    const [hasOrdered, setHasOrdered] = useState(false);
 
     useEffect(() => {
         const getProduct = async () => {
@@ -32,11 +35,11 @@ const Product = () => {
                 const collectionData = await getDoc(collectionsRef);
                 const temp = [];
                 setDataCollection(collectionData.data())
-                
 
-                collectionData.data().addons.forEach(addOn => {temp.push({...addOn, quantity: 0})})
+
+                collectionData.data().addons.forEach(addOn => { temp.push({ ...addOn, quantity: 0 }) })
                 cartDetails.current['add_ons'] = temp;
-                
+
                 const reviewRef = collection(db, `products/${params.id}/reviews`);
                 const reviewDoc = await getDocs(reviewRef);
 
@@ -45,7 +48,7 @@ const Product = () => {
 
                 if (reviewDoc) {
                     reviewDoc.forEach((review) => {
-                        reviews.push({ ...review.data(), id: review.id});
+                        reviews.push({ ...review.data(), id: review.id });
                     })
                 }
 
@@ -54,16 +57,38 @@ const Product = () => {
                 setProduct(tempProduct);
                 setIsLoading(false);
             }
+
+            if (localStorage.getItem('user')) {
+                const { uid } = JSON.parse(localStorage.getItem('user'));
+                const ordersRef = collection(db, 'orders');
+                const q = query(ordersRef, where('user_id', '==', uid))
+                const ordersDoc = await getDocs(q);
+
+                ordersDoc.forEach((order) => {
+                    order.data().products.forEach((product) => {
+                        if (product.productId == params.id) {
+                            setHasOrdered(true);
+                        }
+                    })
+                })
+            }
+
+
+
         }
         getProduct();
     }, []);
 
     useEffect(() => {
-        console.log(product.reviews);
-    },[product])
+        console.log(product);
+    }, [product])
 
-    
-    const callbackCount = ({type, name, count}) => {
+    useEffect(() => {
+        console.log(hasOrdered)
+    }, [hasOrdered])
+
+
+    const callbackCount = ({ type, name, count }) => {
         if (!cartDetails.current.add_ons) return false;
 
         if (type == 'addOns') {
@@ -76,20 +101,20 @@ const Product = () => {
             cartDetails.current.quantity = count;
             cartDetails.current.product_id = params.id;
         }
-        
+
     }
 
     const handleAddToCart = async () => {
 
-        if(localStorage.getItem('user')){
+        if (localStorage.getItem('user')) {
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
             await addDoc(cartRef, cartDetails.current)
-            .then(() => {console.log('success')})
-            .catch(() => {console.log('error')});
+                .then(() => { console.log('success') })
+                .catch(() => { console.log('error') });
 
             location.reload();
-        }else {
+        } else {
             navigate('/login')
         }
 
@@ -122,9 +147,11 @@ const Product = () => {
 
                             <div className="flex flex-col gap-2">
                                 <p className='text-l font-bold'>Inclusions:</p>
-                                <p className='text-m'>Dried Flower Bouqet</p>
-                                <p className='text-m'>Fairy Lights</p>
-                                <p className='text-m'>14" Box</p>
+                                {product.inclusions &&
+                                    product.inclusions.map((inclusion, index) => {
+                                        return (<p key={index} className='text-m'>{inclusion}</p>)
+                                    })}
+
                                 <NumberCounter setCounter={callbackCount} type={'product'} />
                             </div>
 
@@ -146,16 +173,25 @@ const Product = () => {
                     {/* Comment Section */}
                     <div className="flex flex-col w-full  bg-slate-100 p-8 gap-2">
                         <div className="flex w-[75%]">Product Reviews</div>
-                        {!product.reviews.length ? <div>No Reviews</div> : 
+                        {!product.reviews.length ? <div>No Reviews</div> :
                             product.reviews.map(review => {
                                 return <Rating
                                     key={review.id}
+                                    hasOrdered={hasOrdered}
                                     name={review.user_name}
                                     rating={review.rating}
                                     comment={review.comment}
                                 />
                             })}
 
+                        {hasOrdered &&
+                            <Rating
+                                // key={review.id}
+                                hasOrdered={hasOrdered}
+                            // name={review.user_name}
+                            // rating={review.rating}
+                            // comment={review.comment}
+                            />}
                     </div>
                 </div>
 

@@ -64,6 +64,10 @@ const ManageAccount = () => {
         }
     }, []);
 
+    useEffect(() => {
+        console.log(orders);
+    }, [orders])
+
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-row columns-2 gap-3 h-60">
