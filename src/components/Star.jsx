@@ -1,9 +1,7 @@
 import React from 'react'
 
-const Star = () => {
-  return (
-    <box-icon name='star' color='#f9eb00' ></box-icon>
-  )
+const Star = ({yellow}) => {
+    return <box-icon name='star' type={yellow ? 'solid' : null} color='#ffca28' ></box-icon>
 }
 
 export default Star

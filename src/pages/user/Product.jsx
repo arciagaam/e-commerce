@@ -177,7 +177,6 @@ const Product = () => {
                             product.reviews.map(review => {
                                 return <Rating
                                     key={review.id}
-                                    hasOrdered={hasOrdered}
                                     name={review.user_name}
                                     rating={review.rating}
                                     comment={review.comment}
@@ -188,6 +187,7 @@ const Product = () => {
                             <Rating
                                 // key={review.id}
                                 hasOrdered={hasOrdered}
+                                productId={params.id}
                             // name={review.user_name}
                             // rating={review.rating}
                             // comment={review.comment}
