@@ -22,7 +22,12 @@ const ManageAccount = () => {
     const [gender, setGender] = useState();
     const [orders, setOrders] = useState([]);
     const [userData, setUserData] = useState();
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
+
+    const handleRowSelect = (id) => {
+        navigate(`order/${id}`);
+    }
+
     useEffect(() => {
         const user = auth.currentUser;
 
@@ -120,7 +125,7 @@ const ManageAccount = () => {
                                     table={'profileOrders'}
                                     id={order.id}
                                     order={order}
-
+                                    handleRowSelect={handleRowSelect}
                                 />
                             })}
                         </tbody>

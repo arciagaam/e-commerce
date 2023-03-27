@@ -12,16 +12,49 @@ import {
 } from 'firebase/firestore';
 import Star from './Star';
 
-function Rating({ name, rating, comment, hasOrdered }) {
+function Rating({ name, rating, comment, hasOrdered, productId }) {
 
     const [ratings, setRatings] = useState(null);
     const [username, setUsername] = useState('');
+    const [hoverIndex, setHoverIndex] = useState(0);
+    const [starRating, setStarRating] = useState(0);
+    const [newReview, setNewReview] = useState({});
+    const [message, setMessage] = useState('');
+
+    const handleMessageChange = (e) => {
+        setMessage(e.target.value);
+        console.log(e.target.value);
+    }
+
+    const starHighlight = (index) => {
+        return (index <= hoverIndex) || (index <= starRating)
+    }
+
+    const submitReview = async () => {
+        const { uid } = JSON.parse(localStorage.getItem('user'));
+        const reviewsRef = collection(db, `products/${productId}/reviews`);
+        const review = {
+            user_name: username,
+            rating: starRating,
+            comment: message,
+            product_id: productId,
+            user_id: uid
+        }
+
+        await addDoc(reviewsRef, review)
+        .then(docRef => {
+            console.log('Review submitted successfully!');
+        })
+        .catch(error => {
+            console.log(error);
+        })
+    }
 
     useEffect(() => {
         const temp = [];
 
         for (let i = 1; i <= rating; i++) {
-            temp.push(<box-icon type='solid' name='star'></box-icon>);
+            temp.push(<box-icon name='star' type='solid' color='#ffca28' ></box-icon>);
         }
 
         setRatings(temp);
@@ -33,7 +66,6 @@ function Rating({ name, rating, comment, hasOrdered }) {
                 const userDoc = await getDoc(userRef);
 
                 setUsername(userDoc.data().full_name);
-                console.log(hasOrdered);
             }
 
         }
@@ -42,8 +74,8 @@ function Rating({ name, rating, comment, hasOrdered }) {
     }, [])
 
     useEffect(() => {
-        console.log(username);
-    }, [username])
+        console.log(starRating);
+    }, [starRating])
 
     return (
         <div className="flex bg-white">
@@ -58,18 +90,27 @@ function Rating({ name, rating, comment, hasOrdered }) {
                         <div className="flex flex-col justify-center gap-2">
                             <p>{username}</p>
                             <div className="flex flex-row gap-2">
-                                <div>
+                                <div className='flex flex-row'>
                                     {[1,2,3,4,5].map((index) => {
                                         return (
-                                            <Star/>
+                                            <div 
+                                                key={index}
+                                                onMouseEnter={() => setHoverIndex(index)}
+                                                onMouseLeave={() => setHoverIndex(0)}
+                                                onClick={() => setStarRating(index)}>
+                                            <Star
+                                                yellow={starHighlight(index)}
+                                            />
+                                            </div>
+                                            
                                         )
                                     })}
                                 </div>
                                 {/* <p>({rating})</p> */}
                             </div>
                             <div className="flex flex-row gap-7">
-                                <textarea name="" id="" cols="100" rows="2"></textarea>
-                                <button className='bg-accent-default p-1 rounded-md'>Submit</button>
+                                <textarea name="" id="" cols="100" rows="2" value={message} onChange={handleMessageChange}></textarea>
+                                <button onClick={submitReview} className='bg-accent-default p-1 rounded-md'>Submit</button>
                             </div>
                         </div>
                     </div>

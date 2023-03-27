@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { auth, db } from '../../../firebase';
+import { auth, db, storage } from '../../../firebase';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
     collection,
@@ -14,6 +14,8 @@ import {
     query
 } from "firebase/firestore";
 import AddOn from '../../../components/AddOn';
+import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
+
 const ShowCollection = () => {
     const navigate = useNavigate();
     const params = useParams();
@@ -23,6 +25,17 @@ const ShowCollection = () => {
     const [products, setProducts] = useState([]);
     const [addOns, setAddOns] = useState([]);
     const [dataCollection, setDataCollection] = useState([]);
+    const [selectedImage, setSelectedImage] = useState();
+    const [imageFileName, setImageFileName] = useState();
+    const [image, setImage] = useState(null);
+
+    const onSelectFile = (e) => {
+        const selectedFile = e.target.files[0];
+        const imageObj = {image_url:URL.createObjectURL(selectedFile), file_name: selectedFile.name };
+        setImage(selectedFile);
+        setSelectedImage(imageObj);
+        setImageFileName(selectedFile.name);
+    }
 
     useEffect(() => {
 
@@ -31,10 +44,18 @@ const ShowCollection = () => {
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                setDataCollection({...docSnap.data(), id:docSnap.id});
+                setDataCollection({ ...docSnap.data(), id: docSnap.id });
                 setTitle(docSnap.data().title);
                 setDescription(docSnap.data().description);
                 setAddOns(docSnap.data().addons)
+
+                const temp = {
+                    image_url: docSnap.data().image_url,
+                    file_name: docSnap.data().file_name
+                }
+
+                setSelectedImage(temp);
+
             } else {
                 console.log('Collection not found.');
             }
@@ -59,11 +80,27 @@ const ShowCollection = () => {
 
     const handleSubmit = async () => {
         try {
-            const  docRef = doc(db, 'collections', dataCollection.id);
+            const docRef = doc(db, 'collections', dataCollection.id);
             await updateDoc(docRef, {
                 title: title,
                 description: description,
-                addons:addOns
+                addons: addOns
+            }).then(async () => {
+                async function uploadImage(imageDetails) {
+                    const imageRef = ref(storage, `${dataCollection.id}/${imageDetails.name}`);
+
+                    const response = await uploadBytes(imageRef, imageDetails);
+                    const url = await getDownloadURL(response.ref);
+                    return url;
+                }
+
+                const imageUrl = await uploadImage(image);
+
+                const imageDetailsRef = doc(db, 'collections', dataCollection.id);
+                await updateDoc(imageDetailsRef, {
+                    file_name: image.name,
+                    image_url: imageUrl 
+                })
             })
         } catch (err) {
             console.log(err);
@@ -116,7 +153,7 @@ const ShowCollection = () => {
                         <div className="flex flex-row flex-wrap">
 
                             {products.map((product, index) => {
-                                return <Products key={index} product={product}/>
+                                return <Products key={index} product={product} />
                             })}
 
                         </div>
@@ -132,21 +169,24 @@ const ShowCollection = () => {
                         <div className="flex flex-col gap-2">
                             {addOns &&
                                 addOns.map((addOn, index) => {
-                                    return <AddOn key={index} addOn={addOn} index={index} handleAddOnChange={handleAddOnChange} addOns={addOns} setAddOns={setAddOns}/>
+                                    return <AddOn key={index} addOn={addOn} index={index} handleAddOnChange={handleAddOnChange} addOns={addOns} setAddOns={setAddOns} />
                                 })
                             }
                         </div>
-                            <button onClick={onCreateAddOn} className='w-fit py-1 px-2 bg-accent-default text-white rounded-md'>Create Add-On</button>
+                        <button onClick={onCreateAddOn} className='w-fit py-1 px-2 bg-accent-default text-white rounded-md'>Create Add-On</button>
                     </div>
                 </div>
 
                 <div className="flex flex-col gap-10 flex-1">
                     <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
-                        <p>Collection image</p>
-
+                        <p className='font-medium text-accent-default'>Collection image</p>
+                        {selectedImage &&
+                            <div className='flex justify-center items-center w-[30%] border'>
+                                <img src={selectedImage.image_url} alt={'product'} className='object-contain' />
+                            </div>}
                         <div className="flex flex-col">
                             <label htmlFor="price">Add image</label>
-                            <input type="file" />
+                            <input type="file" name='images' id='images' onChange={onSelectFile} multiple accept={'image/png, image/jpeg, image/jpg, image/webp'} />
                         </div>
                     </div>
                 </div>
@@ -161,7 +201,7 @@ const Products = ({ product }) => {
     console.log(product)
     return (
         <div className="flex flex-col justify-center items-center w-[20%] border overflow-hidden rounded-md">
-                <img src={product.images.length > 0 && product.images[0].url} className='object-cover w-full aspect-[9/16]' alt="" />
+            <img src={product.images.length > 0 && product.images[0].url} className='object-cover w-full aspect-[9/16]' alt="" />
 
             <p>{product.name}</p>
         </div>

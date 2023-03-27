@@ -12,11 +12,11 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
 
         setDeletedItem(cartId);
     }
-
+    console.log(cartItem);
     useEffect(() => {
         let temp = 0;
 
-        cartItem.addOns.forEach(addOn => {
+        cartItem.add_ons.forEach(addOn => {
             temp += addOn.quantity * addOn.price;
         })
         setTotalAddOns(temp);
@@ -52,9 +52,9 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
                                     <p>{cartItem.name}</p>
                                     <p>Php {cartItem.pricing}</p>
                                 </div>
-                                {cartItem.addOns &&
-                                    cartItem.addOns.map(addOn => {
-                                        return <div className="flex flex-row gap-5">
+                                {cartItem.add_ons &&
+                                    cartItem.add_ons.map((addOn, index) => {
+                                        return <div key={index} className="flex flex-row gap-5">
                                             <p>{addOn.name}</p>
                                             <p>{addOn.quantity}</p>
                                             <p>{addOn.price}</p>

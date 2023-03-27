@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { auth, db } from '../../../firebase';
+import { auth, db, storage } from '../../../firebase';
 import {
     collection,
     getDocs,
@@ -11,6 +11,7 @@ import {
 } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import AddOn from '../../../components/AddOn';
+import { ref, getDownloadURL, uploadBytes } from 'firebase/storage';
 
 const AddCollection = () => {
 
@@ -19,16 +20,45 @@ const AddCollection = () => {
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [addOns, setAddOns] = useState([]);
+    const [selectedImage, setSelectedImage] = useState();
+    const [imageFileName, setImageFileName] = useState();
+    const [image, setImage] = useState(null);
+
+    const onSelectFile = (e) => {
+        const selectedFile = e.target.files[0];
+        setImage(selectedFile);
+        setSelectedImage(URL.createObjectURL(selectedFile));
+        setImageFileName(selectedFile.name);
+    } 
 
     const handleSubmit = async() => {
         try {
             const newCollection = await addDoc(collection(db, 'collections'), {
                 title: title,
                 description: description,
-                addons: addOns
+                addons: addOns,
+                file_name: imageFileName,
+                image_url: selectedImage
+            }).then(async (collection) => {
+
+                async function uploadImage(imageDetails) {
+                    const imageRef = ref(storage, `${collection.id}/${imageDetails.name}`);
+
+                    const response = await uploadBytes(imageRef, image);
+                    const url = await getDownloadURL(response.ref);
+                    return url;
+                }
+
+                const imageUrl = await uploadImage(image);
+
+                const imageDetailsRef = doc(db, 'collections', collection.id);
+                await updateDoc(imageDetailsRef, {
+                    file_name: image.name,
+                    image_url: imageUrl 
+                })
             })
 
-            navigate(`./../${newCollection.id}`);
+            navigate(`./../${collection.id}`);
         } catch (err) {
             console.log(err);
         }
@@ -99,10 +129,13 @@ const AddCollection = () => {
                 <div className="flex flex-col gap-5 flex-1">
                     <div className="flex flex-col gap-4 shadow-md p-5 bg-white rounded-md">
                         <p className='font-medium text-accent-default'>Collection image</p>
-
+                        {selectedImage && 
+                        <div className='flex justify-center items-center w-[30%] border'>
+                            <img src={selectedImage} alt={'product'} className='object-contain' />
+                        </div>}
                         <div className="flex flex-col">
                             <label htmlFor="price">Add image</label>
-                            <input type="file" />
+                            <input type="file" name='images' id='images' onChange={onSelectFile} multiple accept={'image/png, image/jpeg, image/jpg, image/webp'} />
                         </div>
                     </div>
                 </div>
