@@ -29,6 +29,8 @@ import MyProfile from './components/profile/MyProfile';
 import AddressBook from './components/profile/AddressBook';
 import Cart from './pages/user/Cart';
 import Checkout from './pages/user/Checkout';
+import ShowProfileOrder from './pages/user/ShowProfileOrder';
+
 const App = () => {
   
   return (
@@ -47,6 +49,7 @@ const App = () => {
 
               <Route path='account' element={<Profile/>}> 
                 <Route index element={<ManageAccount/>}/>
+                <Route path='order/:id' element={<ShowProfileOrder/>}/>
                 <Route path='myprofile' element={<MyProfile/>}/>
                 <Route path='addressbook' element={<AddressBook/>}/>
               </Route>

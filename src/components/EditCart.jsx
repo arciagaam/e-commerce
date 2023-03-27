@@ -18,7 +18,7 @@ const EditCart = ({ cartItem, setIsActive }) => {
     useEffect(() => {
         cartDetails.current.product_id = cartItem.productId;
         cartDetails.current.quantity = cartItem.quantity;
-        cartDetails.current.add_ons = cartItem.addOns;
+        cartDetails.current.add_ons = cartItem.add_ons;
 
     },[])
 
@@ -91,8 +91,8 @@ const EditCart = ({ cartItem, setIsActive }) => {
                             <p className='font-bold'>Add-ons:</p>
 
                             <div className="grid grid-cols-2 gap-5 pr-5">
-                                {cartItem.addOns &&
-                                    cartItem.addOns.map((addon, index) => <NumberCounter key={index} label={addon.name} type={'addOns'} price={addon.price} setCounter={callbackCount} initialValue={cartItem.quantity} />)}
+                                {cartItem.add_ons &&
+                                    cartItem.add_ons.map((addon, index) => <NumberCounter key={index} label={addon.name} type={'addOns'} price={addon.price} setCounter={callbackCount} initialValue={cartItem.quantity} />)}
 
                             </div>
                         </div>

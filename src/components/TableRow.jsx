@@ -36,7 +36,7 @@ const TableRow = ({ table, id, name, description, status, inventory, type, order
     case 'profileOrders': {
       const order_date = order.order_date.toDate().toLocaleDateString();
       return (
-        <tr className='border-b cursor-pointer hover:bg-accent-light transition-bg duration-200'>
+        <tr onClick={() => { handleRowSelect(id) }} className='border-b cursor-pointer hover:bg-accent-light transition-bg duration-200'>
           <td className='p-1'>{id}</td>
           <td>{order_date}</td>
           <td className='flex flex-col'>{order.products.map((product, index) => {

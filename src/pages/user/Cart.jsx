@@ -49,7 +49,7 @@ const Cart = () => {
               temp['cartId'] = cart.id;
               temp['productId'] = cart.product_id;
               temp['quantity'] = cart.quantity;
-              temp['addOns'] = cart.add_ons;
+              temp['add_ons'] = cart.add_ons;
               return (temp);
             }
           });

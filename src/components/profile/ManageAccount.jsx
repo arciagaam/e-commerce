@@ -22,6 +22,10 @@ const ManageAccount = () => {
     const [gender, setGender] = useState();
     const [orders, setOrders] = useState([]);
 
+    const handleRowSelect = (id) => {
+        navigate(`order/${id}`);
+    }
+
     useEffect(() => {
         if (localStorage.getItem('user')) {
             const { uid } = JSON.parse(localStorage.getItem('user'));
@@ -50,7 +54,7 @@ const ManageAccount = () => {
                 const data = [];
 
                 ordersDoc.forEach((order) => {
-                    data.push({...order.data(), id: order.id});
+                    data.push({ ...order.data(), id: order.id });
                 })
 
                 console.log(data);
@@ -120,7 +124,7 @@ const ManageAccount = () => {
                                 table={'profileOrders'}
                                 id={order.id}
                                 order={order}
-
+                                handleRowSelect={handleRowSelect}
                             />
                         })}
                     </tbody>

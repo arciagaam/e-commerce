@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { auth, db } from '../../../firebase';
+import { auth, db } from '../../firebase';
 import { useFetcher, useNavigate, useParams } from 'react-router-dom';
 import {
     collection,
@@ -13,9 +13,9 @@ import {
     where,
     query
 } from "firebase/firestore";
-import CartItem from '../../../components/CartItem';
+import CartItem from '../../components/CartItem';
 
-const ShowOrder = () => {
+const ShowProfileOrder = () => {
 
     const navigate = useNavigate();
     const params = useParams();
@@ -68,28 +68,30 @@ const ShowOrder = () => {
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
-                <div className="flex flex-row gap-4 items-center">
-                    <button onClick={() => { navigate('./../') }} className="border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
+                <div className="flex flex-row gap-4">
+                    <button onClick={() => { navigate('../') }} className="self-center border border-accent-dark h-[30px] w-[30px] rounded-lg hover:bg-accent-default hover:text-white hover:font-bold hover:border-accent-default transition-all duration-100">{'<'}</button>
                 </div>
-                <p className='bg-accent-default text-white py-2 px-3 rounded-md'>Order ID: {params.id}</p>
+                <p className='bg-accent-default text-white py-2 px-3 rounded-md self-start'>Order ID: {params.id}</p>
             </div>
 
-            <div className="flex flex-row gap-10">
-                <div className="flex flex-col gap-10 flex-[2]">
-                    <div className="flex flex-col">
-                        <p className='text-lg'>Product Details</p>
-                        {orderDetails.products &&
-                            orderDetails.products.map(product => {
-                                return <CartItem
-                                    key={product.cartId}
-                                    setTotal={callbackTotal}
-                                    isDisplay={isDisplay}
-                                    cartItem={product} />
-                            })}
+            <div className="flex flex-row gap-10 pb-20">
+                <div className="flex flex-col gap-10 flex-[2] bg-zinc-200 p-5 rounded-md">
+                    <div className="flex flex-col gap-3">
+                        <p className='text-lg text-accent-default'>Product Details</p>
+                        <div className="bg-white rounded-md">
+                            {orderDetails.products &&
+                                orderDetails.products.map(product => {
+                                    return <CartItem
+                                        key={product.cartId}
+                                        setTotal={callbackTotal}
+                                        isDisplay={isDisplay}
+                                        cartItem={product} />
+                                })}
+                        </div>
                     </div>
-                    <div className="flex flex-col gap-5">
-                        <p className='text-lg'>Order Details</p>
-                        <div className="flex flex-row justify-between">
+                    <div className="flex flex-col gap-3">
+                        <p className='text-lg text-accent-default'>Order Details</p>
+                        <div className="flex flex-row justify-between bg-white p-5 rounded-md">
                             <div className="flex flex-col">
                                 <p>Payment Method</p>
                                 <p>{orderDetails.payment_method}</p>
@@ -102,18 +104,8 @@ const ShowOrder = () => {
                                 <p>Amount Paid</p>
                                 <p>{orderDetails.total_paid}</p>
                             </div>
-                            <div className="flex flex-col">
-                                <p>Order Status</p>
-                                <select name="status" id="status" onChange={handleStatusChange}>
-                                    <option value="placed" selected={orderStatus == 'placed' ? true : false}>Order placed</option>
-                                    <option value="packed" selected={orderStatus == 'packed' ? true : false}>Order packed</option>
-                                    <option value="shipped" selected={orderStatus == 'shipped' ? true : false}>Order shipped</option>
-                                    <option value="delivered" selected={orderStatus == 'delivered' ? true : false}>Order delivered</option>
 
-                                </select>
-                            </div>
                         </div>
-                        <button className='w-fit p-2 bg-accent-default rounded-md'>Fulfill Payment</button>
 
                     </div>
                 </div>
@@ -149,4 +141,4 @@ const ShowOrder = () => {
     )
 }
 
-export default ShowOrder
+export default ShowProfileOrder
