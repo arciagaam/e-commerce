@@ -32,9 +32,9 @@ const Dropdown = ({ title, content, setSelectedColl, setSelectedFilter }) => {
                 <div className="dropdown w-48 m-auto p-2 relative">
                     <div className='p-2 bg-[#f4f4f4] shadow font-medium text-sm w-48'>{selectedOption ? selectedOption.title : 'Choose your option'}</div>
                     {isActive && <div className="flex flex-col absolute z-[3] text-sm top-14 left-2 p-2 bg-[#f4f4f4]">
-                        {content.map(content => {
+                        {content.map((content, index) => {
                             return (
-                                <p key={content.id} onClick={() => handleSelectOption(content)}>
+                                <p key={index} onClick={() => handleSelectOption(content)}>
                                     {content.title}
                                 </p>
                             )

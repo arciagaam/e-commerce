@@ -44,7 +44,7 @@ const Home = () => {
 
             <div className='flex flex-col w-full'>
 
-                <div className="flex flex-col w-full gap-10">
+                <div className="flex flex-col w-full">
                     {/* Hero */}
                     <div className="relative flex h-[60vh] justify-center items-center overflow-hidden">
                         <div className="flex flex-col items-center z-[2] text-white gap-5">
@@ -58,7 +58,7 @@ const Home = () => {
                     {/* Body */}
 
                     <p className='self-center text-2xl bg-accent-light w-full text-center py-5 font-bold text-accent-default'>Categories</p>
-                    <div className="flex flex-col px-10 gap-20">
+                    <div className="flex flex-col px-10 gap-20 py-10">
 
                         {/* Categories */}
                         <div className="flex flex-col gap-5 justify-between">
@@ -82,7 +82,7 @@ const Home = () => {
                     </div>
 
                     {/* See Whats Popular */}
-                    <div className="flex flex-col gap-5">
+                    <div className="flex flex-col">
                         <p className='self-center text-2xl bg-accent-light w-full text-center py-5 font-bold text-accent-default'>See What's Popular</p>
 
                         <div className="flex flex-row overflow-auto gap-10 items-center py-10 px-10">
