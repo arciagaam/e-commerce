@@ -12,7 +12,6 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
 
         setDeletedItem(cartId);
     }
-    console.log(cartItem);
     useEffect(() => {
         let temp = 0;
 

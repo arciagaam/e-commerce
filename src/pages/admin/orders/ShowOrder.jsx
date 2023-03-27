@@ -26,6 +26,9 @@ const ShowOrder = () => {
     const [isDisplay, setIsDisplay] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
     const [orderStatus, setOrderStatus] = useState('');
+    const [buttonName, setButtonName] = useState('');
+    const [amountPaid, setAmountPaid] = useState(0);
+    const [orderTotal, setOrderTotal] = useState(0);
 
     const callbackTotal = (totalPrice) => {
         setTotalPrice((prevTotal) => prevTotal + totalPrice);
@@ -38,6 +41,24 @@ const ShowOrder = () => {
             .catch(() => { console.log('Error!') });
     }
 
+    const paymentChange = async () => {
+        if (buttonName == 'Fulfill Payment') {
+            setButtonName('Unfulfill Payment');
+            setAmountPaid(orderTotal);
+            const orderRef = doc(db, 'orders', params.id);
+            await updateDoc(orderRef, { total_paid: orderTotal })
+                .then(() => { console.log('Updated order total paid!') })
+                .catch(() => { console.log('Error!') });
+        } else {
+            setButtonName('Fulfill Payment');
+            setAmountPaid(0);
+            const orderRef = doc(db, 'orders', params.id);
+            await updateDoc(orderRef, { total_paid: 0 })
+                .then(() => { console.log('Updated order total paid!') })
+                .catch(() => { console.log('Error!') });
+        }
+    }
+
     useEffect(() => {
         const getDetails = async () => {
             const docRef = doc(db, 'orders', params.id);
@@ -46,6 +67,15 @@ const ShowOrder = () => {
             if (docSnap.exists()) {
                 setOrderDetails({ ...docSnap.data(), id: docSnap.id });
                 setOrderStatus(docSnap.data().status);
+                setAmountPaid(docSnap.data().amount_paid);
+                setOrderTotal(docSnap.data().total_price);
+                console.log(docSnap.data());
+                if (docSnap.data().total_paid == 0) {
+                    setButtonName('Fullfill Payment');
+                } else {
+                    setButtonName('Unfulfill Payment');
+                }
+
             } else {
                 console.log('Order not found');
             }
@@ -64,6 +94,7 @@ const ShowOrder = () => {
 
         getDetails();
     }, [])
+
     return (
         <div className="flex flex-col gap-5">
             <div className="flex flex-row justify-between items-center bg-white p-5 rounded-md shadow-sm">
@@ -99,7 +130,7 @@ const ShowOrder = () => {
                             </div>
                             <div className="flex flex-col">
                                 <p>Amount Paid</p>
-                                <p>{orderDetails.total_paid}</p>
+                                <p>{amountPaid}</p>
                             </div>
                             <div className="flex flex-col">
                                 <p>Order Status</p>
@@ -112,7 +143,7 @@ const ShowOrder = () => {
                                 </select>
                             </div>
                         </div>
-                        <button className='w-fit p-2 bg-accent-default rounded-md'>Fulfill Payment</button>
+                        <button onClick={paymentChange} className='w-fit p-2 bg-accent-default rounded-md'>{buttonName}</button>
 
                     </div>
                 </div>
