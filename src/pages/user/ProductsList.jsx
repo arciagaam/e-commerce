@@ -35,18 +35,18 @@ const ProductsList = () => {
 
     useEffect(() => {
         const getProductList = async () => {
-            const docRef = collection(db, 'products')
-            const q = query(docRef, where('collection', '==', selectedCollection.id));
-            const docSnap = await getDocs(q)
+            if (selectedCollection.id) {
+                const docRef = collection(db, 'products')
+                const q = query(docRef, where('collection', '==', selectedCollection.id));
+                const docSnap = await getDocs(q)
 
-            const data = []
+                const data = []
 
-            docSnap.forEach((snap) => {
-                data.push({ ...snap.data(), id: snap.id })
-            })
-
-            setProductList(data)
-
+                docSnap.forEach((snap) => {
+                    data.push({ ...snap.data(), id: snap.id })
+                })
+                setProductList(data)
+            }
         }
 
         getProductList();
@@ -54,11 +54,11 @@ const ProductsList = () => {
 
     useEffect(() => {
         if (selectedFilter.id == 'LtoH') {
-            setProductList((prevProductList) => prevProductList.sort((a,b) => b.pricing - a.pricing));
+            setProductList((prevProductList) => prevProductList.sort((a, b) => b.pricing - a.pricing));
         }
 
         if (selectedFilter.id == 'HtoL') {
-            setProductList((prevProductList) => prevProductList.sort((a,b) => a.pricing - b.pricing));
+            setProductList((prevProductList) => prevProductList.sort((a, b) => a.pricing - b.pricing));
         }
     }, [selectedFilter])
 
@@ -93,21 +93,9 @@ const ProductsList = () => {
 
     }, [])
 
-    useEffect(() => {
-        if (productList) {
-            productList.forEach(async (product) => {
-                const productImage = product.images[0]
-                const imageRef = ref(storage, `${product.id}/${productImage}`)
-                await getDownloadURL(imageRef).then((url => {
-                    setProductImages((prevProducts) => prevProducts.concat(url))
-                }))
-            })
-        }
-    }, [productList])
-
     return (
 
-        <div className="flex flex-col w-full gap-12">
+        <div className="flex flex-col w-full gap-12 flex-1">
             <div className="flex flex-col w-full items-center self-center gap-8">
                 <p className="text-5xl">Bouquets</p>
 
@@ -118,30 +106,30 @@ const ProductsList = () => {
                         setSelectedColl={callbackCollection}
                     />
 
-                    <Dropdown 
-                    title={'Filter'} 
-                    content={[
-                        { title: 'Price: Lowest to Highest', id: 'LtoH' },
-                        { title: 'Price: Highest to Lowest', id: 'HtoL' }
-                    ]}
-                    setSelectedFilter={callbackFilter}
+                    <Dropdown
+                        title={'Filter'}
+                        content={[
+                            { title: 'Price: Lowest to Highest', id: 'LtoH' },
+                            { title: 'Price: Highest to Lowest', id: 'HtoL' }
+                        ]}
+                        setSelectedFilter={callbackFilter}
                     />
                 </div>
 
             </div>
 
-            <div className="relative grid grid-rows-2 grid-cols-5 w-full">
+            <div className="grid grid-cols-5 w-full h-full">
                 {
                     productList.map((product, index) => {
-                    return <ProductCard
-                        key={index}
-                        index={index}
-                        product={product}
-                        productName={product.name}
-                        productPrice={product.costPerItem}
-                        productImages={productImages}
-                    />
-                })}
+                        return <ProductCard
+                            key={index}
+                            index={index}
+                            product={product}
+                            productName={product.name}
+                            productPrice={product.costPerItem}
+                            productImages={productImages}
+                        />
+                    })}
 
             </div>
         </div>

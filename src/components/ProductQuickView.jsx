@@ -14,7 +14,7 @@ import {
     serverTimestamp
 } from "firebase/firestore";
 
-const ProductQuickView = ({productName, productPrice, isActive, setIsActive, index, productImages, product}) => {
+const ProductQuickView = ({ productName, productPrice, isActive, setIsActive, index, productImages, product }) => {
 
     const navigate = useNavigate();
 
@@ -32,40 +32,42 @@ const ProductQuickView = ({productName, productPrice, isActive, setIsActive, ind
             const docSnap = await getDoc(docRef);
 
             if (docSnap.exists()) {
-                if(docSnap.data().cart){
+                if (docSnap.data().cart) {
                     setCart([...docSnap.data()?.cart]);
                 }
-            }else {
+            } else {
             }
         }
         getData();
 
     }, [])
 
+    console.log(product)
+
     const handleAddToCart = async () => {
-        if(localStorage.getItem('user')){
+        if (localStorage.getItem('user')) {
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
-            await addDoc(cartRef, {product_id:product.id, quantity: itemCount})
-            .then(() => {console.log('success')})
-            .catch(() => {console.log('error')});
+            await addDoc(cartRef, { product_id: product.id, quantity: itemCount })
+                .then(() => { console.log('success') })
+                .catch(() => { console.log('error') });
 
             location.reload();
-        }else {
+        } else {
             navigate('/login')
         }
 
     }
 
     return (
-        <div className='flex absolute inset-0 z-20 justify-center items-center bg-gray-900/25'>
-            <div className="flex flex-col gap-24 w-1/2 h-3/4 bg-gray-300">
+        <div className='absolute flex min-h-full inset-0 z-20 justify-center items-center bg-gray-900/25 '>
+            <div className="flex flex-col bg-white gap-5 py-5 rounded-md shadow-lg">
                 <div className="flex justify-end">
-                    <button className="flex px-5 pt-2" onClick={() => setIsActive(false)}>X</button>
+                    <button className="flex px-5" onClick={() => setIsActive(false)}>X</button>
                 </div>
-                <div className="flex flex-row columns-2 gap-9 px-20 justify-center items-center">
-                    <div className="flex">
-                        <img src={productImages[index]} alt="" />
+                <div className="flex flex-row px-20 gap-20 justify-center items-center">
+                    <div className="flex w-[300px] aspect-square">
+                        <img className="object-cover h-full w-full" src={product.images[0].url} alt="" />
                     </div>
                     <div className="flex flex-col gap-4">
                         <div className=" flex flex-col titlePrice gap-4 font-semibold">
@@ -76,19 +78,17 @@ const ProductQuickView = ({productName, productPrice, isActive, setIsActive, ind
                         <div className="inclusions">
                             <p className="text-normal font-semibold">Inclusions:</p>
                             <ul>
-                                <li>1 Crochet Tulip</li>
-                                <li>Fairy lights</li>
-                                <li>14" box</li>
+                                {product.inclusions && product.inclusions.map((inclusion, index) => (
+                                    <li key={index}>{inclusion}</li>
+                                ))}
                             </ul>
                         </div>
                         <div className="flex flex-col gap-2">
-                            <NumberCounter 
+                            <NumberCounter
                                 setCounter={callbackCount}
                             />
                             <button onClick={handleAddToCart} className="text-sm p-2 bg-[#EFE3D9]">Add to Cart</button>
                         </div>
-
-
                     </div>
                 </div>
             </div>
