@@ -24,6 +24,7 @@ const Product = () => {
     const [itemCount, setItemCount] = useState(0);
     const cartDetails = useRef({});
     const [hasOrdered, setHasOrdered] = useState(false);
+    const [stocks, setStocks] = useState(0);
 
     useEffect(() => {
         const getProduct = async () => {
@@ -55,6 +56,7 @@ const Product = () => {
                 tempProduct = snapData.data();
                 tempProduct['reviews'] = reviews;
                 setProduct(tempProduct);
+                setStocks(tempProduct.inventory);
                 setIsLoading(false);
             }
 
@@ -78,15 +80,6 @@ const Product = () => {
         }
         getProduct();
     }, []);
-
-    useEffect(() => {
-        console.log(product);
-    }, [product])
-
-    useEffect(() => {
-        console.log(hasOrdered)
-    }, [hasOrdered])
-
 
     const callbackCount = ({ type, name, count }) => {
         if (!cartDetails.current.add_ons) return false;
@@ -139,6 +132,10 @@ const Product = () => {
                             <div className="flex flex-col">
                                 <p className='text-4xl'>{product.name}</p>
                                 <p className='text-2xl'>₱{product.costPerItem}</p>
+                                {stocks == 0 ? 
+                                    <p className="italic text-xs font-thin text-red-600">No stocks available.</p> :
+                                    <p className="italic text-xs font-thin">Stocks available: {stocks}</p>
+                                }
                             </div>
 
                             <div className="flex flex-col pt-5">
@@ -165,7 +162,7 @@ const Product = () => {
                                 </div>
                             </div>
                             <div className="flex justify-center mt-10">
-                                <button className="bg-[#EFE3D9] px-6 py-3" onClick={handleAddToCart}>Add to cart</button>
+                                <button className={`px-6 py-3 bg-[#EFE3D9] ${stocks == 0 ? `grayscale` : ``}`} onClick={handleAddToCart} disabled={stocks == 0 ? true : false} >Add to cart</button>
                             </div>
                         </div>
                     </div>

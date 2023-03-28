@@ -47,7 +47,6 @@ const Inventory = () => {
             <tr className='text-left bg-accent-default text-white'>
               <th className='p-2'>Product</th>
               <th>Available</th>
-              <th>On hand</th>
             </tr>
           </thead>
 
@@ -66,7 +65,6 @@ const TableRow = ({ product }) => {
   return (
     <tr className='border-b cursor-pointer hover:bg-accent-light transition-bg duration-200'>
       <td className='p-1'>{product.name}</td>
-      <td>{product.inventory}</td>
       <td>{product.inventory}</td>
     </tr>
   )

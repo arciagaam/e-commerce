@@ -20,9 +20,12 @@ const ProductQuickView = ({ productName, productPrice, isActive, setIsActive, in
 
     const [cart, setCart] = useState([]);
     const [itemCount, setItemCount] = useState(0);
+    const [stocks, setStocks] = useState(0);
 
-    const callbackCount = (count) => {
-        setItemCount(count);
+    const callbackCount = ({type, count}) => {
+        if (type == 'product') {
+            setItemCount(count);            
+        }
     }
 
     useEffect(() => {
@@ -37,8 +40,12 @@ const ProductQuickView = ({ productName, productPrice, isActive, setIsActive, in
                 }
             } else {
             }
+            
+
         }
         getData();
+
+        setStocks(product.inventory);
 
     }, [])
 
@@ -48,7 +55,14 @@ const ProductQuickView = ({ productName, productPrice, isActive, setIsActive, in
         if (localStorage.getItem('user')) {
             const cartRef = collection(db, `users/${auth.currentUser.uid}/cart`);
 
-            await addDoc(cartRef, { product_id: product.id, quantity: itemCount })
+            const collectionsRef = doc(db, 'collections', product.collection);
+            const collectionData = await getDoc(collectionsRef);
+            const temp = [];
+
+            collectionData.data().addons.forEach(addOn => { temp.push({ ...addOn, quantity: 0 }) })
+            
+
+            await addDoc(cartRef, { product_id: product.id, quantity: itemCount, add_ons: temp })
                 .then(() => { console.log('success') })
                 .catch(() => { console.log('error') });
 
@@ -73,6 +87,11 @@ const ProductQuickView = ({ productName, productPrice, isActive, setIsActive, in
                         <div className=" flex flex-col titlePrice gap-4 font-semibold">
                             <p className="text-2xl">{productName}</p>
                             <p className="text-2xl">₱{productPrice}</p>
+                            {stocks == 0 ? 
+                                <p className="italic text-xs font-thin text-red-600">No stocks available.</p> :
+                                <p className="italic text-xs font-thin">Stocks available: {stocks}</p>
+                            }
+
                         </div>
 
                         <div className="inclusions">
@@ -86,8 +105,9 @@ const ProductQuickView = ({ productName, productPrice, isActive, setIsActive, in
                         <div className="flex flex-col gap-2">
                             <NumberCounter
                                 setCounter={callbackCount}
+                                type={'product'}
                             />
-                            <button onClick={handleAddToCart} className="text-sm p-2 bg-[#EFE3D9]">Add to Cart</button>
+                            <button onClick={handleAddToCart} disabled={stocks == 0 ? true : false} className={`text-sm p-2 bg-[#EFE3D9] ${stocks == 0 ? `grayscale` : ``}`}>Add to Cart</button>
                         </div>
                     </div>
                 </div>

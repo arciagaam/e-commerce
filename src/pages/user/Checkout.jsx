@@ -10,7 +10,9 @@ import {
     doc,
     addDoc,
     deleteDoc,
-    serverTimestamp
+    updateDoc,
+    serverTimestamp,
+    increment
 } from 'firebase/firestore';
 import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
@@ -50,6 +52,11 @@ const Checkout = () => {
                 .then(() => { console.log('Successfully Ordered!') })
                 .catch(() => { console.log('Error!') })
 
+            for (const item of checkOutItems) {
+                const productRef = doc(db, 'products', item.productId);
+                await updateDoc(productRef, {inventory: increment(-1)});
+            }
+
             for (const id of cartIds) {
                 const cartDocRef = doc(db, `users/${auth.currentUser.uid}/cart`, id);
                 await deleteDoc(cartDocRef);
@@ -84,7 +91,7 @@ const Checkout = () => {
             }
             getAddress();
             setCheckOutItems(state.cart);
-
+            
         } else {
             navigate('/login')
         }
