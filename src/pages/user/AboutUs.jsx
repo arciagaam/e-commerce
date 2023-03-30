@@ -4,13 +4,18 @@ const AboutUs = () => {
   return (
     <div className="flex flex-col gap-10 h-full flex-1 py-24">
       <p className='text-5xl self-center'>About Us</p>
-      <div className="flex flex-col gap-20">
+      <div className="flex flex-col gap-8">
 
-        <p className='text-lg self-center max-w-[70%] text-center indent-4'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus non mauris in sem varius ultricies. Nulla risus leo, sollicitudin non mattis tempor, condimentum ornare dolor. Pellentesque et eleifend risus, vel consectetur erat. Sed faucibus, sem vel varius sagittis, felis lacus scelerisque neque, consequat porta odio enim ac nibh. Phasellus eget tincidunt turpis. Nunc vel velit congue, feugiat felis at, blandit tortor. Praesent aliquam eu libero in posuere. Sed quis nisi libero. Vestibulum quis leo lacus. Praesent ut sem quis libero finibus scelerisque. Phasellus sed mauris pharetra, porttitor nisl nec, convallis turpis.
+        <p className='text-lg self-center max-w-[70%] text-center indent-4'>Welcome to Singatala PH, your ultimate source for stunning floral designs and unique balloons perfect for any occasion.
         </p>
+        
+        <p className='text-lg self-center max-w-[70%] text-center indent-4'>At Singatala PH, we are dedicated to providing our customers with high-quality products and exceptional customer service. Our crochet bouquets and dried flower arrangements are carefully crafted by our skilled artisans, using only the finest materials to ensure that each piece is as exquisite as the last. Whether you're looking for a vibrant and colorful bouquet to brighten up your home or a thoughtful gift for a loved one, our crochet bouquets and dried flower arrangements are sure to impress.</p>
 
-        <p className='text-lg self-center max-w-[70%] text-center indent-4'>Suspendisse id ante non leo mattis volutpat. Nam fermentum commodo viverra. Cras elit elit, dictum eget fermentum ut, dignissim eget urna. Mauris vulputate id enim ut lobortis. Nulla ac lobortis dui. Aenean porttitor quis mi sed dapibus. Pellentesque arcu nunc, dictum eget feugiat at, euismod sit amet elit. Suspendisse nisi nulla, tempus sed dui a, convallis efficitur sem. Fusce ut diam consequat, porttitor enim at, varius nibh. Aenean euismod tincidunt lectus, ac mattis diam auctor ac</p>
-
+        <p className='text-lg self-center max-w-[70%] text-center indent-4'>In addition to our floral designs, we also offer a wide range of unique balloons that are perfect for any celebration. Our Father's Day special balloons and balloon bouquets are the perfect way to show your appreciation and love for the important people in your life.</p>
+      
+        <p className='text-lg self-center max-w-[70%] text-center indent-4'>At Singatala PH, we are committed to providing our customers with a seamless and hassle-free shopping experience. We take pride in our exceptional customer service, and we are always happy to assist you in finding the perfect product for your needs.</p>
+      
+        <p className='text-lg self-center max-w-[70%] text-center indent-4'>Thank you for choosing Singatala PH. We look forward to helping you add a touch of beauty and joy to your life with our stunning floral designs and unique balloons.</p>
       </div>
     </div>
   )
