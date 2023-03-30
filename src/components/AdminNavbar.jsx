@@ -48,7 +48,6 @@ const AdminNavbar = () => {
                     <div className={`flex flex-col gap-2 ${isActive ? 'max-h-[100px]' : 'max-h-0'} overflow-hidden transition-all duration-200 ease-in-out`}>
                         <NavLink to={'collections'} className={({ isActive }) => isActive ? activeClassName : 'px-8'}>Collections</NavLink>
                         <NavLink to={'products'} className={({ isActive }) => isActive ? activeClassName : 'px-8'}>Products</NavLink>
-                        <NavLink to={'inventory'} className={({ isActive }) => isActive ? activeClassName : 'px-8'}>Inventory</NavLink>
                     </div>
                 </div>
 

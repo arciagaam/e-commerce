@@ -14,7 +14,6 @@ import Register from './pages/auth/Register';
 
 import AdminNavbar from './components/AdminNavbar';
 import Dashboard from './pages/admin/Dashboard';
-import Inventory from './pages/admin/Inventory';
 import Products from './pages/admin/products/Products';
 import Orders from './pages/admin/orders/Orders';
 import ShowOrder from './pages/admin/orders/ShowOrder';
@@ -72,7 +71,6 @@ const App = () => {
             <Route path='collections' element={<Collections />}></Route>
             <Route path='collections/add' element={<AddCollection />}></Route>
             <Route path='collections/:id' element={<ShowCollection />}></Route>
-            <Route path='inventory' element={<Inventory />}></Route>
           </Route>
 
           <Route path="*" element={<div>Page not Found!</div>}/>
