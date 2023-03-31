@@ -47,7 +47,6 @@ const Checkout = () => {
                 products: checkOutItems,
                 order_date: serverTimestamp()
             }
-            // console.log(productIds)
             await addDoc(orderRef, orderDoc)
                 .then(() => { console.log('Successfully Ordered!') })
                 .catch(() => { console.log('Error!') })
@@ -72,7 +71,6 @@ const Checkout = () => {
 
     const displayCheckoutButton = () => {
         if (paymentMethod == 'Cash On Delivery') {
-            console.log('hello');
             return (<button onClick={handlePlaceOrder} className="p-3 bg-accent-default">PLACE ORDER</button>)
         } else if (paymentMethod == 'PayPal') {
             return (<button>Hello</button>)
@@ -103,7 +101,6 @@ const Checkout = () => {
     }, [totalPrice])
 
     useEffect(() => {
-        console.log(paymentMethod);
         displayCheckoutButton();
     }, [paymentMethod])
 
@@ -113,16 +110,16 @@ const Checkout = () => {
                 <div className="flex flex-col">
                     <div className="flex justify-between px-4 py-2 bg-accent-default">
                         <p>Shipping Address</p>
-                        <button>Edit</button>
+                        <button onClick={()=>{navigate('/account/addressbook')}}>Edit</button>
                     </div>
                     <div className="flex flex-col gap-4 p-4 bg-zinc-200">
                         <div className="flex flex-row gap-5">
-                            <p>{userAddress.name}</p>
-                            <p>{userAddress.mobile}</p>
+                            <p>{userAddress?.name}</p>
+                            <p>{userAddress?.mobile}</p>
                         </div>
                         <div className="flex flex-row gap-5 items-center">
                             <div className="px-3 rounded-l-3xl rounded-r-3xl bg-accent-default">Default</div>
-                            <p>{userAddress.address}</p>
+                            <p>{userAddress?.address}</p>
                         </div>
                     </div>
                 </div>

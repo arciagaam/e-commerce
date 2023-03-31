@@ -29,11 +29,10 @@ const ManageAccount = () => {
     }
 
     useEffect(() => {
-        const user = auth.currentUser;
 
-        if (user) {
-            const { uid } = user;
 
+        if (localStorage.getItem('user')) {
+            const { uid } = JSON.parse(localStorage.getItem('user'));
             const fetch = async () => {
                 const docRef = doc(db, 'users', uid);
                 const docSnap = await getDoc(docRef);
@@ -49,6 +48,8 @@ const ManageAccount = () => {
                     console.log('User not found.');
                 }
 
+            getOrders();
+
             }
 
             const getOrders = async () => {
@@ -62,17 +63,17 @@ const ManageAccount = () => {
                     data.push({ ...order.data(), id: order.id });
                 })
                 setOrders(data);
-            }
 
+                setLoading(false);
+            }
+            
             fetch();
-            getOrders();
         } else {
             navigate('/');
         }
     }, []);
-
-
     return (
+        loading ? <p>Loading</p> :
         <>
             <p className='text-2xl'>Manage My Account</p>
 
@@ -80,7 +81,7 @@ const ManageAccount = () => {
                 <div className="flex flex-row columns-2 gap-3 h-60">
                     <div className="flex flex-col w-1/3 pl-3 pt-3 gap-3 bg-zinc-200 shadow-md">
                         <p className='text-lg'>Personal Profile</p>
-                        <p className='text-sm'>Name: {name}</p>
+                        <p className='text-sm'>Name: {name ?? ''}</p>
                         <p className='text-sm'>Email: {email}</p>
                         <p className='text-sm'>Mobile Number: {number}</p>
                         <p className='text-sm'>Birthday: {birthday}</p>
@@ -91,15 +92,15 @@ const ManageAccount = () => {
                         <div className="flex flex-row columns-2">
                             <div className="flex flex-col w-1/2 pl-3 pr-4 gap-2">
                                 <p className='text-sm'>DEFAULT SHIPPING ADDRESS</p>
-                                <p className='text-sm font-semibold'>{userData?.addresses[userData.default_shipping].name}</p>
-                                <p className='text-xs'>{userData?.addresses[userData.default_shipping].address}</p>
-                                <p className='text-xs'>{userData?.addresses[userData.default_shipping].mobile}</p>
+                                <p className='text-sm font-semibold'>{userData.addresses.length > 0 && userData?.addresses[userData.default_shipping].name}</p>
+                                <p className='text-xs'>{userData.addresses.length > 0 && userData?.addresses[userData.default_shipping]?.address }</p>
+                                <p className='text-xs'>{userData.addresses.length > 0 && userData?.addresses[userData.default_shipping]?.mobile}</p>
                             </div>
                             <div className="flex flex-col w-1/2 pl-3 pr-4 gap-2">
                                 <p className='text-sm'>DEFAULT BILLING ADDRESS</p>
-                                <p className='text-sm font-semibold'>{userData?.addresses[userData.default_billing].name}</p>
-                                <p className='text-xs'>{userData?.addresses[userData.default_billing].address}</p>
-                                <p className='text-xs'>{userData?.addresses[userData.default_billing].mobile}</p>
+                                <p className='text-sm font-semibold'>{userData.addresses.length > 0 && userData?.addresses[userData.default_billing].name}</p>
+                                <p className='text-xs'>{userData.addresses.length > 0 && userData?.addresses[userData.default_billing]?.address}</p>
+                                <p className='text-xs'>{userData.addresses.length > 0 && userData?.addresses[userData.default_billing]?.mobile}</p>
                             </div>
                         </div>
                     </div>

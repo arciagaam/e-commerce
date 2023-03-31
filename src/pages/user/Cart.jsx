@@ -85,9 +85,9 @@ const Cart = () => {
 
       <p className='self-center'>My Cart</p>
 
-      <div className="flex flex-row">
+      <div className="flex flex-row gap-5 mr-5">
 
-        <div className="flex flex-col w-[60%] bg-slate-100">
+        <div className="flex flex-col w-[60%] bg-accent-light">
 
           {cartItems &&
             cartItems.map(cartItem => {
@@ -101,14 +101,14 @@ const Cart = () => {
 
         </div>
 
-        <div className="flex flex-col flex-1 bg-slate-50 gap-5">
+        <div className="flex flex-col flex-1 gap-5 p-5 rounded-md shadow-md">
 
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row gap-2 justify-between items-start flex-1">
             <p>Estimated Total</p>
-            <p>Php {totalPrice}</p>
+            <p className='text-xl font-bold'>₱ {totalPrice}</p>
           </div>
 
-          {totalPrice !== 0 && <Link to={`/checkout`} state={{cart: cartItems}}>Checkout</Link> }
+          {totalPrice !== 0 && <Link className='py-2 px-2 bg-accent-default text-white rounded-md w-fit self-end justify-self-end' to={`/checkout`} state={{cart: cartItems}}>Checkout</Link> }
 
           
 

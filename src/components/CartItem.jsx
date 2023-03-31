@@ -38,7 +38,7 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
 
                 <div className="flex flex-row flex-1 gap-10">
                     <div className="flex flex-col">
-                        <div className="aspect-square h-[160px] overflow-hidden">
+                        <div className="aspect-square h-[160px] overflow-hidden rounded-md">
                             <img className='object-cover' src={cartItem.images[0].url} alt="prod" />
                         </div>
                     </div>
@@ -47,16 +47,17 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
 
                         <div className="flex flex-row gap-10">
                             <div className="flex flex-col">
-                                <div className="flex flex-row gap-10">
-                                    <p>{cartItem.name}</p>
-                                    <p>Php {cartItem.pricing}</p>
+                                <div className="flex flex-row gap-10 items-center">
+                                    <p className='text-2xl'>{cartItem.name}</p>
+                                    <p>₱ {cartItem.pricing}</p>
                                 </div>
                                 {cartItem.add_ons &&
                                     cartItem.add_ons.map((addOn, index) => {
+                                        if(addOn.quantity == 0) return;
                                         return <div key={index} className="flex flex-row gap-5">
                                             <p>{addOn.name}</p>
-                                            <p>{addOn.quantity}</p>
-                                            <p>{addOn.price}</p>
+                                            <p>{addOn.quantity}x</p>
+                                            <p>₱ {addOn.price}</p>
                                         </div>
 
                                     })}
@@ -70,7 +71,7 @@ const CartItem = ({ cartItem, setDeletedItem, setTotal, isDisplay = true }) => {
                 <div className="flex flex-col h-full justify-between">
                     <div className="flex flex-row gap-20">
                         <p>Quantity: {cartItem.quantity}</p>
-                        <p>Total: {totalPrice}</p>
+                        <p>Total: ₱ {totalPrice}</p>
                     </div>
 
                     {isDisplay && (

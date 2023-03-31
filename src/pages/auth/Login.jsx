@@ -17,7 +17,7 @@ import {
 const Login = () => {
     useEffect(()=>{
         if(localStorage.getItem('user')){
-            const {role} = JSON.parse(localStorage.getItem('user'));
+            const {role} = JSON.parse(localStorage.getItem('user')) ?? auth.currentUser.role;
             console.log(role);
             if(role == 0){
                 navigate('/');

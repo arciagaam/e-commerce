@@ -43,6 +43,13 @@ const Register = () => {
                 await setDoc(doc(db, 'users', uid), {
                     email:email,
                     role:0,
+                    default_billing:'0',
+                    default_shipping:'0',
+                    addresses:[],
+                    birthday:'',
+                    full_name:'',
+                    gender:'',
+                    mobile:'',
                 })                
                 localStorage.setItem('message', 'Account Created');
                 navigate('/login');
